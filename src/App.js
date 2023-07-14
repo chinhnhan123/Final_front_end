@@ -5,8 +5,13 @@ import Register from "./page/Register";
 import Login from "./page/Login";
 import MessagePage from "./page/MessagePage";
 import Main from "./layout/Main";
-const socket = socketIO.connect("http://localhost:4000");
-function App() {
+import CallVideo from "./page/CallVideo1";
+import Dashboard from "./page/Admin/Dashboard";
+import Course from "./page/Admin/Course";
+import Pigs from "./page/Famer/Pigs";
+import CreatePig from "./page/Famer/CreatePig";
+import UpdatePig from "./page/Famer/UpdatePig";
+function App({ socket }) {
   return (
     <Fragment>
       <Routes>
@@ -15,8 +20,14 @@ function App() {
             path="/message"
             element={<MessagePage socket={socket} />}
           ></Route>
+          <Route path="/dashboard" element={<Dashboard />}></Route>
+          <Route path="/course" element={<Course />}></Route>
+          <Route path="/" element={<Pigs />}></Route>
+          <Route path="/createpig" element={<CreatePig />}></Route>
+          <Route path="/updatePig/:id" element={<UpdatePig />}></Route>
         </Route>
 
+        <Route path="/call/:id" element={<CallVideo />}></Route>
         <Route path="/login" element={<Login />}></Route>
         <Route path="/register" element={<Register />}></Route>
       </Routes>

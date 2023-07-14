@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import logo from "../assets/images/logo.png";
 import User from "../components/messages/User";
 import HeaderChat from "../components/messages/HeaderChat";
@@ -5,25 +6,30 @@ import Message from "../components/messages/Message";
 import { useEffect, useState, useRef, useContext } from "react";
 import axios from "axios";
 import { getChat, getConversation } from "../api/messageAPI";
-import { AuthContext } from "../context/AuthContext";
+import { AuthContext } from "../context/auth/AuthContext";
+import socketIO from "socket.io-client";
 
-const Home = ({ socket }) => {
+const Home = () => {
   const [conversations, setConversations] = useState([]);
   const [currentChat, setCurrentChat] = useState(null);
   const [messages, setMessages] = useState([]);
   const [arrivalMessage, setArrivalMessage] = useState(null);
   const [onlineUsers, setOnlineUsers] = useState([]);
+  const [allUsers, setAllUsers] = useState([]);
   const scrollRef = useRef();
   const inputMessage = useRef();
   const { user } = useContext(AuthContext);
+  const socket = useRef();
+  socket.current = socketIO.connect("http://localhost:4000");
 
   useEffect(() => {
-    socket.on("getMessage", (data) => {
+    socket.current.on("getMessage", (data) => {
       setArrivalMessage({
         sender: data.senderId,
         content: data.content,
         createdAt: new Date(),
       });
+      console.log("111");
     });
   }, []);
 
@@ -32,15 +38,6 @@ const Home = ({ socket }) => {
       currentChat?.idAccount.includes(arrivalMessage.sender) &&
       setMessages((mes) => [...mes, arrivalMessage]);
   }, [arrivalMessage, currentChat]);
-
-  useEffect(() => {
-    socket.emit("addUser", user.id);
-    // socket.on("getUsers", (users) => {
-    //   setOnlineUsers(
-    //     user.followings.filter((f) => users.some((u) => u.userId === f))
-    //   );
-    // });
-  }, []);
 
   useEffect(() => {
     const getConversations = async () => {
@@ -55,9 +52,25 @@ const Home = ({ socket }) => {
   }, []);
 
   useEffect(() => {
+    socket.current.emit("addUser", user.id);
+    socket.current.on("getUsers", (users) => {
+      const formattedUsers = users.map((user) => ({
+        userId: user.userId,
+        socketId: user.socketId,
+      }));
+      setAllUsers(formattedUsers);
+    });
+  }, []);
+  useEffect(() => {
+    const filteredUsers = allUsers.filter((user) => {
+      return conversations.some((item) => item.idAccount.includes(user.userId));
+    });
+    setOnlineUsers(filteredUsers);
+  }, [allUsers, conversations]);
+
+  useEffect(() => {
     const getMessages = async () => {
       try {
-        setCurrentChat(conversations[0]);
         const res = await getChat(currentChat?._id);
         setMessages(res.data);
       } catch (err) {
@@ -66,6 +79,23 @@ const Home = ({ socket }) => {
     };
     getMessages();
   }, [currentChat, conversations]);
+
+  useEffect(() => {
+    console.log(
+      "🚀 --------------------------------------------------------------------🚀"
+    );
+    console.log(
+      "🚀 ~ file: MessagePage.js:86 ~ useEffect ~ currentChat:",
+      currentChat
+    );
+    console.log(
+      "🚀 --------------------------------------------------------------------🚀"
+    );
+  }, [currentChat]);
+
+  useEffect(() => {
+    setCurrentChat(conversations[0]);
+  }, [conversations]);
 
   useEffect(() => {
     scrollRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -85,7 +115,7 @@ const Home = ({ socket }) => {
       (account) => account !== user.id
     );
 
-    socket.emit("sendMessage", {
+    socket.current.emit("sendMessage", {
       senderId: user.id,
       receiverId,
       content: newMessage,
@@ -160,10 +190,16 @@ const Home = ({ socket }) => {
                       <User
                         key={c._id}
                         logo={logo}
-                        conversation={c}
-                        isChatting={false}
+                        isChatting={currentChat?.idAccount.find(
+                          (account) => account !== user.id
+                        )}
                         userId={c.idAccount.find(
                           (account) => account !== user.id
+                        )}
+                        active={onlineUsers?.some(
+                          (u) =>
+                            u.userId ===
+                            c.idAccount.find((account) => account !== user.id)
                         )}
                       ></User>{" "}
                     </div>
@@ -178,7 +214,11 @@ const Home = ({ socket }) => {
               userId={currentChat?.idAccount.find(
                 (account) => account !== user.id
               )}
-              time={currentChat?.createdAt}
+              active={onlineUsers?.some(
+                (u) =>
+                  u.userId ===
+                  currentChat?.idAccount.find((account) => account !== user.id)
+              )}
             ></HeaderChat>
 
             <div className="flex flex-col flex-1 p-3 chat-area h-[80%]">

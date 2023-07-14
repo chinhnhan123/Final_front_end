@@ -5,16 +5,14 @@ import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import { BrowserRouter } from "react-router-dom";
 import { AuthContextProvider } from "./context/auth/AuthContext";
-import { CallVideoContextProvider } from "./context/CallVideo/CallVideoContext";
+
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
     <AuthContextProvider>
-      <CallVideoContextProvider>
-        <BrowserRouter>
-          <App />
-        </BrowserRouter>
-      </CallVideoContextProvider>
+      <BrowserRouter>
+        <App />
+      </BrowserRouter>
     </AuthContextProvider>
   </React.StrictMode>
 );

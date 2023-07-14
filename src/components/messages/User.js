@@ -1,7 +1,7 @@
 import { format } from "timeago.js";
 import { useEffect, useState } from "react";
 import { getAccountById } from "../../api/account";
-const User = ({ logo, conversation, isChatting, userId }) => {
+const User = ({ logo, isChatting, userId, active }) => {
   const [fullName, setFullName] = useState();
 
   useEffect(() => {
@@ -17,7 +17,7 @@ const User = ({ logo, conversation, isChatting, userId }) => {
   }, [userId]);
 
   const isOnline = `flex p-4 mb-4 transition-transform duration-300 border-red-500 transform bg-white rounded shadow-md cursor-pointer entry hover:scale-105 ${
-    isChatting ? "border-l-4 " : ""
+    isChatting === userId ? "border-l-4 " : ""
   }}`;
   return (
     <div className={isOnline}>
@@ -28,7 +28,7 @@ const User = ({ logo, conversation, isChatting, userId }) => {
             src={logo}
             alt="chat-user"
           />
-          {conversation.createdAt === "Active now" ? (
+          {active ? (
             <span className="absolute bottom-0 right-0 w-4 h-4 bg-green-500 border-2 border-white rounded-full"></span>
           ) : (
             <span className="absolute bottom-0 right-0 w-4 h-4 bg-gray-400 border-2 border-white rounded-full"></span>
@@ -41,7 +41,7 @@ const User = ({ logo, conversation, isChatting, userId }) => {
         </div>
         <div>
           <small className="text-gray-500">
-            {format(conversation.createdAt)}
+            {active ? <p>Active now</p> : <p>Inactive</p>}
           </small>
         </div>
       </div>

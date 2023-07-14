@@ -5,7 +5,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { loginAPI } from "../api/auth";
 import { useNavigate } from "react-router-dom";
-import { AuthContext } from "./../context/AuthContext";
+import { AuthContext } from "./../context/auth/AuthContext";
 
 const schema = yup.object({
   email: yup.string().required().email(),
