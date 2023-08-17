@@ -1,32 +1,42 @@
 import React, { useState } from "react";
+import axios from "../../../http/index";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
-import "./style/createPig.css";
+import { useNavigate } from "react-router-dom";
+
+import "../style/createFood.css";
 const schema = yup.object().shape({
   name: yup.string().required("Name is required"),
-  category: yup.string().required("Category is required"),
-  quantity: yup
-    .number()
-    .typeError("Quantity must be a number")
-    .required("Quantity is required")
-    .positive("Quantity must be a positive number")
-    .integer("Quantity must be an integer"),
+  description: yup.string().required("Description is required"),
 });
 
-const CreatePig = () => {
+const CreateFood = () => {
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isSubmitting },
   } = useForm({
     resolver: yupResolver(schema),
   });
+  const navigate = useNavigate();
 
   const [selectedImage, setSelectedImage] = useState(null);
 
-  const onSubmit = (data) => {
-    console.log(data);
+  const onSubmit = async (data) => {
+    const formData = new FormData();
+    formData.append("nameFood", data.name);
+    formData.append("description", data.description);
+    formData.append("file", data.image[0]);
+
+    const res = await axios.post("http://localhost:4000/api/food", formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+    if (res.status === 200) {
+      navigate("/food", { replace: true });
+    }
   };
 
   const handleImageChange = (e) => {
@@ -34,10 +44,10 @@ const CreatePig = () => {
   };
 
   return (
-    <div className="flex justify-center mt-7 md:mt-20 xl:mt-28">
+    <div className="flex justify-center mb-10 mt-7 md:mt-20 xl:mt-28">
       <div className="w-3/4 lg:w-[60%] bg-white rounded-lg">
         <h1 className="w-full  text-white bg-[#FDB022] text-2xl font-semibold rounded-t-lg h-14 text-center pt-3">
-          Create new Pig
+          Create new Food
         </h1>
         <form
           onSubmit={handleSubmit(onSubmit)}
@@ -68,7 +78,7 @@ const CreatePig = () => {
             </div>
           </div>
           <div>
-            <label className="block mb-2 font-semibold">Name:</label>
+            <label className="block mb-2 font-semibold">Name Food:</label>
             <input
               type="text"
               {...register("name")}
@@ -79,33 +89,25 @@ const CreatePig = () => {
             )}
           </div>
           <div>
-            <label className="block mb-2 font-semibold">Category:</label>
-            <input
+            <label className="block mb-2 font-semibold">Description:</label>
+            <textarea
               type="text"
-              {...register("category")}
+              rows="7"
+              {...register("description")}
               className="w-full px-4 py-2 border border-gray-300 rounded "
             />
-            {errors.category && (
-              <span className="text-red-500">{errors.category.message}</span>
+            {errors.description && (
+              <span className="text-red-500">{errors.description.message}</span>
             )}
           </div>
-          <div>
-            <label className="block mb-2 font-semibold">Quantity:</label>
-            <input
-              type="number"
-              {...register("quantity")}
-              className="w-full px-4 py-2 border border-gray-300 rounded"
-            />
-            {errors.quantity && (
-              <span className="text-red-500">{errors.quantity.message}</span>
-            )}
-          </div>
+
           <div className="text-center">
             <button
               type="submit"
               className="px-4 py-2  text-white bg-[#FDB022] rounded hover:opacity-80"
+              disabled={isSubmitting}
             >
-              Add pigs
+              {isSubmitting ? "Adding Pigs..." : "Add Pigs"}
             </button>
           </div>
         </form>
@@ -114,4 +116,4 @@ const CreatePig = () => {
   );
 };
 
-export default CreatePig;
+export default CreateFood;

@@ -8,7 +8,7 @@ export default function Pigs() {
   const navigate = useNavigate();
 
   return (
-    <div>
+    <div className="p-3 md:px-14 md:py-7">
       <div className="mb-10 text-center">
         <Button
           type="link"

@@ -130,54 +130,16 @@ const Home = () => {
     }
   };
   return (
-    <div className="flex-1 w-full h-full max-h-screen bg-gray-100">
-      <div className="container flex flex-col w-11/12 h-full m-auto main-body">
-        <div className="flex flex-row py-4 flex-2">
-          <div className="flex-1">
-            <span className="inline-block text-gray-700 align-bottom xl:hidden hover:text-gray-900">
-              <span className="block w-6 h-6 p-1 rounded-full hover:bg-gray-400">
-                <svg
-                  className="w-4 h-4"
-                  fill="none"
-                  strokeLineCap="round"
-                  strokeLineJoin="round"
-                  strokeWidth="2"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path d="M4 6h16M4 12h16M4 18h16"></path>
-                </svg>
-              </span>
-            </span>
-            <span className="inline-block ml-8 text-gray-700 align-bottom lg:hidden hover:text-gray-900">
-              <span className="block w-6 h-6 p-1 rounded-full hover:bg-gray-400">
-                <svg
-                  className="w-4 h-4"
-                  fill="none"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
-                </svg>
-              </span>
-            </span>
-          </div>
-        </div>
-
+    <div className="flex-1 w-full h-full max-h-screen bg-[#FEEFC7]">
+      <div className="container flex flex-col w-full h-full p-7 main-body">
         <div className="flex flex-row flex-1 h-full main">
           <div className="hidden w-1/3 lg:block heading flex-2">
             <div className="flex flex-col mb-5">
               <div className="">
-                <h1 className="mb-4 text-4xl font-semibold text-blue-600">
-                  Messages
-                </h1>
                 <div className="p-2 pb-6 search flex-2">
                   <input
                     type="text"
-                    className="block w-full px-3 py-2 bg-transparent border border-gray-200 outline-none rounded-xl"
+                    className="block w-full px-3 py-2 !bg-white border border-gray-200 rounded-xl"
                     placeholder="Search"
                   />
                 </div>
@@ -208,7 +170,7 @@ const Home = () => {
               </div>
             </div>
           </div>
-          <div className="flex flex-col w-2/3 h-full border-l shadow-lg ">
+          <div className="flex flex-col w-2/3 h-[97%] pt-2 bg-white border-l rounded-lg shadow-lg ">
             <HeaderChat
               logo={logo}
               userId={currentChat?.idAccount.find(
@@ -235,7 +197,7 @@ const Home = () => {
                 ))}
               </div>
 
-              <div className="pt-4 pb-10 flex-2">
+              <div className="pt-4 pb-6 flex-2">
                 <div className="flex bg-white rounded-lg shadow write">
                   <div className="flex items-center content-center p-4 pr-0 text-center flex-3">
                     <span className="block text-center text-gray-400 hover:text-gray-800">

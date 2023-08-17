@@ -1,16 +1,21 @@
-import socketIO from "socket.io-client";
-import { Fragment, lazy, Suspense } from "react";
+import { Fragment } from "react";
 import { Route, Routes } from "react-router-dom";
 import Register from "./page/Register";
 import Login from "./page/Login";
 import MessagePage from "./page/MessagePage";
 import Main from "./layout/Main";
-import CallVideo from "./page/CallVideo1";
 import Dashboard from "./page/Admin/Dashboard";
-import Course from "./page/Admin/Course";
+import Food from "./page/Admin/food/Food";
+import CreateFood from "./page/Admin/food/CreateFood";
+import CreateMedicine from "./page/Admin/medicine/CreateMedicine";
+import Medicine from "./page/Admin/medicine/Medicine";
+import Category from "./page/Admin/category/Category";
+import CreateCategory from "./page/Admin/category/CreateCategory";
 import Pigs from "./page/Famer/Pigs";
 import CreatePig from "./page/Famer/CreatePig";
 import UpdatePig from "./page/Famer/UpdatePig";
+import DetailPig from "./page/Famer/DetailPig";
+import HomeTrader from "./page/trader/Home";
 function App({ socket }) {
   return (
     <Fragment>
@@ -20,14 +25,22 @@ function App({ socket }) {
             path="/message"
             element={<MessagePage socket={socket} />}
           ></Route>
-          <Route path="/dashboard" element={<Dashboard />}></Route>
-          <Route path="/course" element={<Course />}></Route>
+          <Route path="/guide" element={<Dashboard />}></Route>
+          <Route path="/food" element={<Food />}></Route>
+          <Route path="/create-food" element={<CreateFood />}></Route>
+          <Route path="/create-medicine" element={<CreateMedicine />}></Route>
+          <Route path="/medicine" element={<Medicine />}></Route>
+          <Route path="/category" element={<Category />}></Route>
+          <Route path="/create-category" element={<CreateCategory />}></Route>
+
           <Route path="/" element={<Pigs />}></Route>
           <Route path="/createpig" element={<CreatePig />}></Route>
           <Route path="/updatePig/:id" element={<UpdatePig />}></Route>
+          <Route path="/detailPig/:id" element={<DetailPig />}></Route>
+
+          <Route path="/trader" element={<HomeTrader />}></Route>
         </Route>
 
-        <Route path="/call/:id" element={<CallVideo />}></Route>
         <Route path="/login" element={<Login />}></Route>
         <Route path="/register" element={<Register />}></Route>
       </Routes>

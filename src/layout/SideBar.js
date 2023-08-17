@@ -1,25 +1,44 @@
 import React, { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import {
-  RightCircleOutlined,
+  LeftCircleOutlined,
   MessageOutlined,
   ProfileOutlined,
   HomeOutlined,
 } from "@ant-design/icons";
 import HamburgerButton from "../components/HamburgerMenuButton/HamburgerButton";
-
+import { AuthContext } from "../context/auth/AuthContext";
+import { useContext } from "react";
 const Sidebar = () => {
   const [open, setOpen] = useState(true);
   const [mobileMenu, setMobileMenu] = useState(false);
   const location = useLocation();
+  const { user } = useContext(AuthContext);
 
-  const Menus = [
-    { title: "Home", path: "/", src: <HomeOutlined /> },
-    { title: "Chat box", path: "/message", src: <MessageOutlined /> },
-    { title: "Profile", path: "/profile", src: <ProfileOutlined /> },
-    { title: "Log out", path: "/logout", src: null, gap: "true" },
-  ];
-
+  let Menus = [];
+  // if (user?.role === "Farmer") {
+  //   Menus = [
+  //     { title: "Home", path: "/", src: <HomeOutlined /> },
+  //     { title: "Chat box", path: "/message", src: <MessageOutlined /> },
+  //     { title: "DashBoard", path: "/dashboard", src: <ProfileOutlined /> },
+  //     { title: "Log out", path: "/logout", src: null, gap: "true" },
+  //   ];
+  // }
+  // if (user?.role === "Admin") {
+    Menus = [
+      { title: "Guide", path: "/guide", src: <HomeOutlined /> },
+      { title: "Category", path: "/category", src: <HomeOutlined /> },
+      { title: "Food", path: "/food", src: <HomeOutlined /> },
+      { title: "Medicine", path: "/medicine", src: <HomeOutlined /> },
+      { title: "Log out", path: "/logout", src: null, gap: "true" },
+    ];
+  // }
+  // if (user?.role === "Trader") {
+  //   Menus = [
+  //     { title: "Home", path: "/trader", src: <ProfileOutlined /> },
+  //     { title: "Log out", path: "/logout", src: null, gap: "true" },
+  //   ];
+  // }
   return (
     <>
       <div
@@ -27,7 +46,7 @@ const Sidebar = () => {
           open ? "w-60" : "w-fit"
         } hidden sm:block relative h-screen duration-300 bg-[#FFFAEB] border-r border-gray-200 dark:border-gray-600 p-5 dark:bg-slate-800`}
       >
-        <RightCircleOutlined
+        <LeftCircleOutlined
           style={{ fontSize: "32px" }}
           className={`${
             !open && "rotate-180"

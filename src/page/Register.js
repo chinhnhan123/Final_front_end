@@ -53,7 +53,7 @@ const Register = () => {
     return config;
   };
   return (
-    <div className="h-screen pt-20 min-h-max bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500">
+    <div className="h-screen pt-20 2xl:pt-36 min-h-max bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500">
       <div className="container mx-auto ">
         <div className="flex flex-col w-11/12 mx-auto bg-white shadow-lg lg:flex-row lg:w-8/12 rounded-xl ">
           <div

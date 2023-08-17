@@ -1,0 +1,15 @@
+:where(.css-dev-only-do-not-override-1m62vyb).ant-tabs-card
+  > .ant-tabs-nav
+  .ant-tabs-tab-active,
+:where(.css-dev-only-do-not-override-1m62vyb).ant-tabs-card
+  > div
+  > .ant-tabs-nav
+  .ant-tabs-tab-active {
+  background-color: #fdb022;
+}
+
+:where(.css-dev-only-do-not-override-1m62vyb).ant-tabs
+  .ant-tabs-tab.ant-tabs-tab-active
+  .ant-tabs-tab-btn {
+  color: white;
+}

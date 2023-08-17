@@ -8,6 +8,7 @@ const loginAPI = async (config, dispatch) => {
     );
     localStorage.setItem("access_token", res.data.handleToken);
     dispatch({ type: "LOGIN_SUCCESS", payload: res.data.payload });
+    return res.data.payload;
   } catch (err) {
     dispatch({ type: "LOGIN_FAILURE", payload: err });
   }

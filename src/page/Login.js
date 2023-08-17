@@ -34,13 +34,23 @@ const Login = () => {
       password: password,
     };
     const response = await loginAPI(config, dispatch);
-    navigate("/", { replace: true });
-    return response;
+    console.log("🚀 ------------------------------------------------------------🚀");
+    console.log("🚀 ~ file: Login.js:37 ~ onSubmitLogin ~ response:", response.role);
+    console.log("🚀 ------------------------------------------------------------🚀");
+    if(response.role === "Admin"){
+      navigate("/guide", { replace: true });
+    }
+    if(response.role === "Trader"){
+      navigate("/trader", { replace: true });
+    }
+    if(response.role === "Farmer"){
+      navigate("/", { replace: true });
+    }
   };
   return (
-    <div className="h-screen pt-20 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500">
-      <div className="container mx-auto h-[100%]">
-        <div className="flex flex-col w-11/12 lg:h-[75%] mx-auto bg-white shadow-lg lg:flex-row lg:w-8/12 rounded-xl ">
+    <div className="h-full min-h-screen pt-20 2xl:pt-48 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500">
+      <div className="container h-full mx-auto">
+        <div className="flex flex-col w-11/12 lg:h-[75%] min-h-[400px] mx-auto bg-white shadow-lg lg:flex-row lg:w-8/12 rounded-xl ">
           <div
             className="flex flex-col items-center justify-center w-full p-12 bg-center bg-no-repeat bg-cover lg:w-1/2 rounded-l-xl"
             style={{
@@ -114,7 +124,7 @@ const Login = () => {
               <div className="mt-5">
                 <input
                   type="submit"
-                  value="Register Now"
+                  value="Log in"
                   className="w-full py-3 text-center text-white bg-purple-500"
                 />
               </div>

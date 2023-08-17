@@ -35,7 +35,7 @@ export default function PigCard({ idPig }) {
         alt=""
         className="w-full h-[200px] object-cover rounded-lg "
         onClick={() => {
-          navigate(`/pig/${idPig}`);
+          navigate(`/detailPig/${idPig}`);
         }}
       />
     </div>
