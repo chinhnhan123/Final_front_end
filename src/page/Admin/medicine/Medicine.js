@@ -4,18 +4,30 @@ import Button from "../../../components/core/Button";
 import { PlusOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router";
 import axios from "../../../http/index";
+import Modals from "../../../components/modal/CreateModal";
 
 import Table from "../../../components/table/Table";
 const Medicine = () => {
   const navigate = useNavigate();
   const [data, setData] = useState([]);
   useEffect(() => {
-    const getFood = async () => {
+    const getMedicine = async () => {
       const res = await axios.get("http://localhost:4000/api/medicine");
       setData([...res.data]);
     };
-    getFood();
+    getMedicine();
   }, []);
+
+  const handleDeleteConfirm = async (id) => {
+    try {
+      await axios.delete(`http://localhost:4000/api/medicine/${id}`);
+      // Refresh data after successful deletion
+      const res = await axios.get("http://localhost:4000/api/medicine");
+      setData([...res.data]);
+    } catch (error) {
+      console.error("Error deleting medicine:", error);
+    }
+  };
 
   const styleNameColumn = "text-lg font-bold";
   const columns = [
@@ -27,7 +39,7 @@ const Medicine = () => {
           <img src={url} alt="image" className="w-28" />
         </>
       ),
-      width: "15%",
+      width: "13%",
     },
     {
       title: "Medicine",
@@ -35,10 +47,10 @@ const Medicine = () => {
       className: styleNameColumn,
       render: (text) => (
         <>
-          <span className="ml-3 text-lg font-normal">{text}</span>
+          <span className="text-lg font-normal ">{text}</span>
         </>
       ),
-      width: "18%",
+      width: "15%",
     },
     {
       title: "Types",
@@ -46,10 +58,10 @@ const Medicine = () => {
       className: styleNameColumn,
       render: (text) => (
         <>
-          <span className="ml-3 text-lg font-normal">{text}</span>
+          <span className="text-lg font-normal ">{text}</span>
         </>
       ),
-      width: "18%",
+      width: "10%",
     },
     {
       title: "Description",
@@ -57,7 +69,7 @@ const Medicine = () => {
       className: styleNameColumn,
       render: (text) => (
         <>
-          <span className="ml-3 text-lg font-normal">{text}</span>
+          <span className="text-lg font-normal ">{text}</span>
         </>
       ),
     },
@@ -67,7 +79,7 @@ const Medicine = () => {
       className: styleNameColumn,
       render: (text) => (
         <>
-          <span className="ml-3 text-lg font-normal">{text}</span>
+          <span className="text-lg font-normal ">{text}</span>
         </>
       ),
     },
@@ -77,21 +89,28 @@ const Medicine = () => {
       className: styleNameColumn,
       render: (_id) => (
         <div className="flex">
-          <a href={`/updateMedicine/${_id}`} className="mr-4 2xl:mr-8">
+          <a href={`/update-medicine/${_id}`} className="mr-4 2xl:mr-8">
             <EditOutlined
               className="rounded-full bg-[#E7F8E3] p-1"
               style={{ fontSize: "20px", color: "#86F298" }}
             />
           </a>
-          <a href={`/deleteMedicine/${_id}`}>
-            <DeleteOutlined
-              className="rounded-full bg-[#FCEBEA] p-1"
-              style={{ fontSize: "20px", color: "#D34053" }}
-            />
-          </a>
+          <Modals
+            icon={
+              <DeleteOutlined
+                className="rounded-full bg-[#FCEBEA] p-1 cursor-pointer"
+                style={{ fontSize: "20px", color: "#D34053" }}
+              />
+            }
+            handleDeleteConfirm={handleDeleteConfirm}
+            okText="Delete"
+            title="Delete Medicine"
+            content="Are you sure you want to delete this medicine?"
+            id={_id}
+          />
         </div>
       ),
-      width: "15%",
+      width: "12%",
     },
   ];
 
@@ -108,7 +127,7 @@ const Medicine = () => {
           Create new medicine
         </Button>{" "}
       </div>
-      <div className="w-[70%] mt-10 flex justify-center items-center">
+      <div className="w-[95%] 2xl:w-[88%] mt-10 flex justify-center items-center">
         <Table
           dataSource={data}
           columns={columns}

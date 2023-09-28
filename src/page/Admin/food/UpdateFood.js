@@ -1,41 +1,76 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useParams, useNavigate } from "react-router-dom";
 import axios from "../../../http/index";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
-import { useNavigate } from "react-router-dom";
+import { enqueueSnackbar } from "notistack";
 
-import "../style/createFood.css";
 const schema = yup.object().shape({
   name: yup.string().required("Name is required"),
   description: yup.string().required("Description is required"),
 });
 
-const CreateFood = () => {
+const UpdateFood = () => {
+  const { id } = useParams();
+  const navigate = useNavigate();
+
   const {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
+    setValue,
   } = useForm({
     resolver: yupResolver(schema),
   });
-  const navigate = useNavigate();
 
   const [selectedImage, setSelectedImage] = useState(null);
+
+  useEffect(() => {
+    const getFoodDetails = async () => {
+      try {
+        const res = await axios.get(`http://localhost:4000/api/food/${id}`);
+        const foodData = res.data;
+
+        // Set initial form values
+        setValue("name", foodData.nameFood);
+        setValue("description", foodData.description);
+
+        // Set initial image preview
+        setSelectedImage(foodData.urlImage);
+      } catch (error) {
+        console.error("Error fetching food details:", error);
+      }
+    };
+
+    getFoodDetails();
+  }, [id, setValue]);
 
   const onSubmit = async (data) => {
     const formData = new FormData();
     formData.append("nameFood", data.name);
     formData.append("description", data.description);
-    formData.append("file", data.image[0]);
+    if (data.image[0]) {
+      formData.append("file", data.image[0]);
+    } else {
+      formData.append("img", selectedImage);
+    }
 
-    const res = await axios.post("http://localhost:4000/api/food", formData, {
-      headers: {
-        "Content-Type": "multipart/form-data",
-      },
-    });
-    if (res.status === 200) {
-      navigate("/food", { replace: true });
+    try {
+      const res = await axios.patch(
+        `http://localhost:4000/api/food/${id}`,
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+      if (res.status === 200) {
+        navigate("/food");
+      }
+    } catch (error) {
+      enqueueSnackbar("Thông tin chưa chính xác", { variant: "error" });
     }
   };
 
@@ -44,10 +79,10 @@ const CreateFood = () => {
   };
 
   return (
-    <div className="flex justify-center mb-10 mt-7 z xl:mt-28">
+    <div className="flex justify-center mb-10 mt-7 md:mt-20 xl:mt-28">
       <div className="w-3/4 lg:w-[60%] bg-white rounded-lg">
         <h1 className="w-full  text-white bg-[#FDB022] text-2xl font-semibold rounded-t-lg h-14 text-center pt-3">
-          Create new Food
+          Update Food
         </h1>
         <form
           onSubmit={handleSubmit(onSubmit)}
@@ -107,7 +142,7 @@ const CreateFood = () => {
               className="px-4 py-2  text-white bg-[#FDB022] rounded hover:opacity-80"
               disabled={isSubmitting}
             >
-              {isSubmitting ? "Adding Pigs..." : "Add Pigs"}
+              {isSubmitting ? "Updating Food..." : "Update Food"}
             </button>
           </div>
         </form>
@@ -116,4 +151,4 @@ const CreateFood = () => {
   );
 };
 
-export default CreateFood;
+export default UpdateFood;

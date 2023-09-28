@@ -7,12 +7,13 @@ import { useNavigate } from "react-router-dom";
 
 import farmer from "../assets/images/farmer.png";
 import trader from "../assets/images/trader.png";
-import { registerAPI } from "../api/auth";
+import { registerAPI } from "../services/api/auth";
+import { enqueueSnackbar } from "notistack";
 
 const schema = yup.object({
   email: yup.string().required().email(),
   password: yup.string().required(),
-  fullName: yup.string().required().max(10, "MUST BE 10 CHARACTERS OR LESS"),
+  fullName: yup.string().required(),
   terms: yup.boolean().oneOf([true], "Checkbox is required"),
 });
 
@@ -26,14 +27,11 @@ const Register = () => {
     getValues,
     handleSubmit,
     formState: { errors, isSubmitting, isValid, isDirty, dirtyFields },
-    watch,
-    reset,
   } = useForm({ resolver: yupResolver(schema) });
 
   const handleClick = (e) => {
     e.preventDefault();
     if (e.target.textContent === "farmer") {
-      console.log("farmer");
       text.current.textContent = "farmer";
       e.target.textContent = "trader";
       setBg(farmer);
@@ -45,12 +43,23 @@ const Register = () => {
   };
 
   const onSubmitRegister = async () => {
-    console.log("submit");
-    const config = getValues(["email", "password", "fullName"]);
-    registerAPI(config);
-    navigate("/login", { replace: true });
-
-    return config;
+    const config = {
+      email: getValues("email"),
+      password: getValues("password"),
+      fullName: getValues("fullName"),
+      address: getValues("address"),
+      phoneNumber: getValues("phone"),
+      role: text.current.textContent,
+    };
+    console.log("🚀 ~ file: Register.js:61 ~ config:", config);
+    const res = await registerAPI(config);
+    console.log("🚀 ~ file: Register.js:47 ~ res:", res);
+    if (res?.status === 200) {
+      enqueueSnackbar("Bạn đã đăng ký thành công.", { variant: "success" });
+      navigate("/login", { replace: true });
+      return;
+    }
+    enqueueSnackbar("Thông tin chưa chính xác", { variant: "error" });
   };
   return (
     <div className="h-screen pt-20 2xl:pt-36 min-h-max bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500">
@@ -68,7 +77,7 @@ const Register = () => {
                   onClick={handleClick}
                   className="text-3xl font-semibold text-purple-500 cursor-pointer opacity-70 hover:opacity-100"
                 >
-                  trader
+                  Trader
                 </button>
                 ?
               </p>
@@ -77,7 +86,7 @@ const Register = () => {
           <div className="w-full lg:w-[44%] py-16 px-12">
             <h2 className="mb-4 text-3xl">Register</h2>
             <p className="mb-4 text-xl font-normal">
-              You are applying to be a <span ref={text}>farmer</span>.
+              You are applying to be a <span ref={text}>Farmer</span>.
             </p>
             <form onSubmit={handleSubmit(onSubmitRegister)}>
               <div className="mt-5">
@@ -164,7 +173,7 @@ const Register = () => {
                 </span>
                 {errors.terms && (
                   <div className="text-sm text-red-500">
-                    {errors.terms?.message}
+                    s{errors.terms?.message}
                   </div>
                 )}
               </div>

@@ -1,9 +1,9 @@
-import React, { useState } from "react";
+import React, { useEffect } from "react";
 import axios from "../../../http/index";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 const schema = yup.object().shape({
   nameCategory: yup.string().required("Category name is required"),
@@ -12,20 +12,49 @@ const schema = yup.object().shape({
   daysToRaisePigs: yup.number().required("Days to raise pigs is required"),
 });
 
-const CreateCategory = () => {
+const UpdateCategory = () => {
+  const { id } = useParams();
   const {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
+    setValue,
   } = useForm({
     resolver: yupResolver(schema),
   });
+
   const navigate = useNavigate();
 
+  useEffect(() => {
+    const fetchCategory = async () => {
+      try {
+        const response = await axios.get(
+          `http://localhost:4000/api/category/${id}`
+        );
+        const categoryData = response.data;
+        setValue("nameCategory", categoryData.nameCategory);
+        setValue("kilogram", categoryData.kilogram);
+        setValue("description", categoryData.description);
+        setValue("daysToRaisePigs", categoryData.daysToRaisePigs);
+      } catch (error) {
+        console.error("Error fetching category:", error);
+      }
+    };
+
+    fetchCategory();
+  }, []);
+
   const onSubmit = async (data) => {
-    const res = await axios.post("http://localhost:4000/api/category", data);
-    if (res.status === 200) {
-      navigate("/category", { replace: true });
+    try {
+      const res = await axios.put(
+        `http://localhost:4000/api/category/${id}`,
+        data
+      );
+      if (res.status === 200) {
+        navigate("/category", { replace: true });
+      }
+    } catch (error) {
+      console.error("Error updating category:", error);
     }
   };
 
@@ -33,7 +62,7 @@ const CreateCategory = () => {
     <div className="flex justify-center mb-10 mt-7 md:mt-20 xl:mt-28">
       <div className="w-3/4 lg:w-[60%] bg-white rounded-lg">
         <h1 className="w-full  text-white bg-[#FDB022] text-2xl font-semibold rounded-t-lg h-14 text-center pt-3">
-          Create new Category
+          Update Category
         </h1>
         <form
           onSubmit={handleSubmit(onSubmit)}
@@ -89,14 +118,13 @@ const CreateCategory = () => {
               <span className="text-red-500">{errors.description.message}</span>
             )}
           </div>
-
           <div className="text-center">
             <button
               type="submit"
               className="px-4 py-2 text-white bg-[#FDB022] rounded hover:opacity-80"
               disabled={isSubmitting}
             >
-              {isSubmitting ? "Adding Category..." : "Add Category"}
+              {isSubmitting ? "Updating Category..." : "Update Category"}
             </button>
           </div>
         </form>
@@ -105,4 +133,4 @@ const CreateCategory = () => {
   );
 };
 
-export default CreateCategory;
+export default UpdateCategory;

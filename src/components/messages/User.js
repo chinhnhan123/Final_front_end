@@ -1,6 +1,5 @@
-import { format } from "timeago.js";
 import { useEffect, useState } from "react";
-import { getAccountById } from "../../api/account";
+import { getAccountById } from "../../services/api/account";
 const User = ({ logo, isChatting, userId, active }) => {
   const [fullName, setFullName] = useState();
 

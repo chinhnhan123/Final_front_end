@@ -1,8 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import "./style/createPig.css";
+import axios from "../../http/index";
+import { useNavigate } from "react-router-dom";
 const schema = yup.object().shape({
   name: yup.string().required("Name is required"),
   category: yup.string().required("Category is required"),
@@ -18,15 +20,49 @@ const CreatePig = () => {
   const {
     register,
     handleSubmit,
+    isSubmitting,
     formState: { errors },
   } = useForm({
     resolver: yupResolver(schema),
   });
-
+  const navigate = useNavigate();
   const [selectedImage, setSelectedImage] = useState(null);
+  const [categoryInGuide, setCategoryInGuide] = useState([]);
+  const idAccount = JSON.parse(localStorage.getItem("user"));
+  const getCategoryInGuide = async () => {
+    try {
+      const res = await axios.get(
+        `http://localhost:4000/api/category/category-in-guide`
+      );
+      if (res.status === 200) {
+        setCategoryInGuide(res?.data);
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
 
-  const onSubmit = (data) => {
-    console.log(data);
+  useEffect(() => {
+    getCategoryInGuide();
+  }, []);
+
+  const onSubmit = async (data) => {
+    const formData = new FormData();
+    formData.append("name", data.name);
+    formData.append("idAccount", idAccount.id);
+    formData.append("idCategory", data.category);
+    formData.append("quantity", data.quantity);
+    formData.append("file", data.image[0]);
+
+    const res = await axios.post("http://localhost:4000/api/herd", formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+
+    if (res.status === 200) {
+      navigate("/", { replace: true });
+    }
   };
 
   const handleImageChange = (e) => {
@@ -80,11 +116,19 @@ const CreatePig = () => {
           </div>
           <div>
             <label className="block mb-2 font-semibold">Category:</label>
-            <input
-              type="text"
+            <select
               {...register("category")}
-              className="w-full px-4 py-2 border border-gray-300 rounded "
-            />
+              className="w-full px-4 py-2 border border-gray-300 rounded"
+            >
+              <option value="" disabled selected hidden>
+                Select your category
+              </option>
+              {categoryInGuide.map((category) => (
+                <option key={category._id} value={category._id}>
+                  {category.nameCategory}
+                </option>
+              ))}
+            </select>
             {errors.category && (
               <span className="text-red-500">{errors.category.message}</span>
             )}
@@ -104,8 +148,9 @@ const CreatePig = () => {
             <button
               type="submit"
               className="px-4 py-2  text-white bg-[#FDB022] rounded hover:opacity-80"
+              disabled={isSubmitting}
             >
-              Add pigs
+              {isSubmitting ? "Creating Pig..." : "Create Pig"}
             </button>
           </div>
         </form>

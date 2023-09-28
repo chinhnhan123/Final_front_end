@@ -5,7 +5,7 @@ import HeaderChat from "../components/messages/HeaderChat";
 import Message from "../components/messages/Message";
 import { useEffect, useState, useRef, useContext } from "react";
 import axios from "axios";
-import { getChat, getConversation } from "../api/messageAPI";
+import { getChat, getConversation } from "../services/api/messageAPI";
 import { AuthContext } from "../context/auth/AuthContext";
 import socketIO from "socket.io-client";
 
@@ -29,7 +29,6 @@ const Home = () => {
         content: data.content,
         createdAt: new Date(),
       });
-      console.log("111");
     });
   }, []);
 
@@ -80,18 +79,7 @@ const Home = () => {
     getMessages();
   }, [currentChat, conversations]);
 
-  useEffect(() => {
-    console.log(
-      "🚀 --------------------------------------------------------------------🚀"
-    );
-    console.log(
-      "🚀 ~ file: MessagePage.js:86 ~ useEffect ~ currentChat:",
-      currentChat
-    );
-    console.log(
-      "🚀 --------------------------------------------------------------------🚀"
-    );
-  }, [currentChat]);
+  useEffect(() => {}, [currentChat]);
 
   useEffect(() => {
     setCurrentChat(conversations[0]);

@@ -1,0 +1,15 @@
+:where(.css-dev-only-do-not-override-1m62vyb).ant-steps.ant-steps-navigation .ant-steps-item::before {
+  background: #FDB022; 
+  color: #FDB022;
+}
+
+:where(.css-dev-only-do-not-override-1m62vyb).ant-steps .ant-steps-item-process .ant-steps-item-icon { 
+  background: #FDB022;
+  border-color:#FDB022;
+  color: #FDB022; 
+}
+
+.ant-steps-item-icon{
+  background: #FDB022; 
+  color: #FDB022;
+}

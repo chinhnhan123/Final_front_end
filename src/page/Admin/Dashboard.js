@@ -9,7 +9,7 @@ const Dashboard = () => {
         <InfoCard title="Total farmer:" value="6389">
           <img
             src="https://cdn3d.iconscout.com/3d/premium/thumb/farmer-5706137-4745159.png"
-            alt="famer"
+            alt="Farmer"
             className="rounded-full shadow-xl w-14 h-14"
           />
         </InfoCard>

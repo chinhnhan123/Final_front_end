@@ -1,8 +1,21 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import TraderCard from "../../components/cards/TraderCard";
-import Pagination from "../../components/pagination/Pagination";
+import { useNavigate } from "react-router";
+import axios from "../../http/index";
 
 export default function Home() {
+  const [data, setData] = useState([]);
+  console.log("🚀 ~ file: Home.js:8 ~ data:", data);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const getHerd = async () => {
+      const res = await axios.get(`http://localhost:4000/api/herd/`);
+      setData([...res.data]);
+    };
+    getHerd();
+  }, []);
+
   return (
     <div className="p-3 md:px-14 md:py-7">
       <div className="flex justify-center mb-16">
@@ -32,30 +45,18 @@ export default function Home() {
           </div>
         </div>
       </div>
-      <div className="grid grid-cols-1 mb-8 sm:gap-x-2 gap-y-8 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
-        <TraderCard />
-        <TraderCard />
-        <TraderCard />
-        <TraderCard />
-        <TraderCard />
-
-        <TraderCard />
-        <TraderCard />
-        <TraderCard />
-        <TraderCard />
-        <TraderCard />
-        <TraderCard />
-        <TraderCard />
-        <TraderCard />
-        <TraderCard />
-        <TraderCard />
-        <TraderCard />
-        <TraderCard />
-        <TraderCard />
+      <div className="grid grid-cols-1 mb-8 sm:gap-x-2 gap-y-8 md:grid-cols-2 2xl:grid-cols-3">
+        {data?.map((item) => (
+          <TraderCard
+            key={item._id}
+            idAccount={item.idAccount._id}
+            name={item.idAccount.fullName}
+            namePig={item.name}
+            quantity={item.quantity}
+            image={item.urlImage}
+          />
+        ))}
       </div>
-      <div className="pagination">
-        <Pagination totalPages={30} currentPage={7}></Pagination>
-      </div>{" "}
     </div>
   );
 }

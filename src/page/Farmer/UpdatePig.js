@@ -1,8 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
-import { useLocation } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+import axios from "../../http/index";
+import { enqueueSnackbar } from "notistack";
 
 const schema = yup.object().shape({
   name: yup.string().required("Name is required"),
@@ -19,30 +21,80 @@ const UpdatePig = () => {
   const {
     register,
     handleSubmit,
+    setValue,
+    isSubmitting,
     formState: { errors },
   } = useForm({
     resolver: yupResolver(schema),
   });
+  const { id } = useParams();
+  const navigate = useNavigate();
+  const [categoryInGuide, setCategoryInGuide] = useState([]);
+  const [selectedImage, setSelectedImage] = useState();
 
-  const [selectedImage, setSelectedImage] = useState(
-    "https://thuthuatnhanh.com/wp-content/uploads/2022/08/hinh-anh-avatar-luffy-mac-do-kimono.jpg"
-  );
+  const getCategoryInGuide = async () => {
+    try {
+      const res = await axios.get(
+        `http://localhost:4000/api/category/category-in-guide`
+      );
+      if (res.status === 200) {
+        setCategoryInGuide(res?.data);
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
 
-  const location = useLocation();
-  const { name, category, quantity } = location.state || {};
-  console.log(
-    "🚀 ------------------------------------------------------------🚀"
-  );
-  console.log(
-    "🚀 ~ file: UpdatePig.js:33 ~ UpdatePig ~ quantity:",
-    typeof quantity
-  );
-  console.log(
-    "🚀 ------------------------------------------------------------🚀"
-  );
+  const getPigDetails = async () => {
+    try {
+      const res = await axios.get(`http://localhost:4000/api/herd/${id}`);
+      const PigData = res.data;
 
-  const onSubmit = (data) => {
-    console.log(data);
+      // Set initial form values
+      setValue("name", PigData.name);
+      setValue("category", PigData.idCategory._id);
+      setValue("quantity", PigData.quantity);
+
+      setSelectedImage(PigData.urlImage);
+    } catch (error) {
+      console.error("Error fetching food details:", error);
+    }
+  };
+
+  useEffect(() => {
+    getCategoryInGuide();
+    getPigDetails();
+  }, []);
+
+  const onSubmit = async (data) => {
+    const formData = new FormData();
+    formData.append("name", data.name);
+    formData.append("idCategory", data.category);
+    formData.append("quantity", data.quantity);
+    if (data.image[0]) {
+      formData.append("file", data.image[0]);
+    } else {
+      formData.append("img", selectedImage);
+    }
+
+    try {
+      const res = await axios.patch(
+        `http://localhost:4000/api/herd/${id}`,
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+      if (res.status === 200) {
+        navigate("/");
+      } else {
+        enqueueSnackbar("Thông tin chưa chính xác", { variant: "error" });
+      }
+    } catch (error) {
+      console.error("Error updating food:", error);
+    }
   };
 
   const handleImageChange = (e) => {
@@ -88,7 +140,6 @@ const UpdatePig = () => {
             <input
               type="text"
               {...register("name")}
-              value={name}
               className="w-full px-4 py-2 border border-gray-300 rounded"
             />
             {errors.name && (
@@ -97,12 +148,16 @@ const UpdatePig = () => {
           </div>
           <div>
             <label className="block mb-2 font-semibold">Category:</label>
-            <input
-              type="text"
+            <select
               {...register("category")}
-              value={category}
-              className="w-full px-4 py-2 border border-gray-300 rounded "
-            />
+              className="w-full px-4 py-2 border border-gray-300 rounded"
+            >
+              {categoryInGuide.map((category) => (
+                <option key={category._id} value={category._id}>
+                  {category.nameCategory}
+                </option>
+              ))}
+            </select>
             {errors.category && (
               <span className="text-red-500">{errors.category.message}</span>
             )}
@@ -111,7 +166,6 @@ const UpdatePig = () => {
             <label className="block mb-2 font-semibold">Quantity:</label>
             <input
               type="number"
-              value={quantity}
               {...register("quantity")}
               className="w-full px-4 py-2 border border-gray-300 rounded"
             />
@@ -123,8 +177,9 @@ const UpdatePig = () => {
             <button
               type="submit"
               className="px-4 py-2  text-white bg-[#FDB022] rounded hover:opacity-80"
+              disabled={isSubmitting}
             >
-              Update pigs
+              {isSubmitting ? "Updating Pig..." : "Update Pig"}
             </button>
           </div>
         </form>

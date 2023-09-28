@@ -3,9 +3,10 @@ import { useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
-import { loginAPI } from "../api/auth";
+import { loginAPI } from "../services/api/auth";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "./../context/auth/AuthContext";
+import { enqueueSnackbar } from "notistack";
 
 const schema = yup.object({
   email: yup.string().required().email(),
@@ -33,19 +34,25 @@ const Login = () => {
       email: email,
       password: password,
     };
+
     const response = await loginAPI(config, dispatch);
-    console.log("🚀 ------------------------------------------------------------🚀");
-    console.log("🚀 ~ file: Login.js:37 ~ onSubmitLogin ~ response:", response.role);
-    console.log("🚀 ------------------------------------------------------------🚀");
-    if(response.role === "Admin"){
-      navigate("/guide", { replace: true });
+    console.log("🚀 ~ file: Login.js:38 ~ response:", response);
+    if (response?.status === 200) {
+      enqueueSnackbar("Bạn đã đằng nhập thành công.", { variant: "success" });
     }
-    if(response.role === "Trader"){
+    if (response?.payload?.role === "Admin") {
+      navigate("/dashboard", { replace: true });
+      return;
+    }
+    if (response?.payload?.role === "Trader") {
       navigate("/trader", { replace: true });
+      return;
     }
-    if(response.role === "Farmer"){
+    if (response?.payload?.role === "Farmer") {
       navigate("/", { replace: true });
+      return;
     }
+    enqueueSnackbar("Thông tin chưa chính xác", { variant: "error" });
   };
   return (
     <div className="h-full min-h-screen pt-20 2xl:pt-48 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500">

@@ -5,6 +5,7 @@ import Button from "../../../components/core/Button";
 import { PlusOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router";
 import Table from "../../../components/table/Table";
+import Modals from "../../../components/modal/CreateModal";
 
 const Food = () => {
   const navigate = useNavigate();
@@ -16,6 +17,17 @@ const Food = () => {
     };
     getFood();
   }, []);
+
+  const handleDeleteConfirm = async (id) => {
+    try {
+      await axios.delete(`http://localhost:4000/api/food/${id}`);
+      // Refresh data after successful deletion
+      const res = await axios.get("http://localhost:4000/api/food");
+      setData([...res.data]);
+    } catch (error) {
+      console.error("Error deleting food:", error);
+    }
+  };
 
   const styleNameColumn = "text-lg font-bold";
   const columns = [
@@ -35,7 +47,7 @@ const Food = () => {
       className: styleNameColumn,
       render: (text) => (
         <>
-          <span className="ml-3 text-lg font-normal">{text}</span>
+          <span className="text-lg font-normal ">{text}</span>
         </>
       ),
       width: "18%",
@@ -46,7 +58,7 @@ const Food = () => {
       className: styleNameColumn,
       render: (text) => (
         <>
-          <span className="ml-3 text-lg font-normal">{text}</span>
+          <span className="text-lg font-normal ">{text}</span>
         </>
       ),
     },
@@ -56,18 +68,25 @@ const Food = () => {
       className: styleNameColumn,
       render: (_id) => (
         <div className="flex">
-          <a href={`/updateAcc/${_id}`} className="mr-4 2xl:mr-8">
+          <a href={`/update-food/${_id}`} className="mr-4 2xl:mr-8">
             <EditOutlined
               className="rounded-full bg-[#E7F8E3] p-1"
               style={{ fontSize: "20px", color: "#86F298" }}
             />
           </a>
-          <a href={`/deleteAcc/${_id}`}>
-            <DeleteOutlined
-              className="rounded-full bg-[#FCEBEA] p-1"
-              style={{ fontSize: "20px", color: "#D34053" }}
-            />
-          </a>
+          <Modals
+            icon={
+              <DeleteOutlined
+                className="rounded-full bg-[#FCEBEA] p-1 cursor-pointer"
+                style={{ fontSize: "20px", color: "#D34053" }}
+              />
+            }
+            handleDeleteConfirm={handleDeleteConfirm}
+            okText="Delete"
+            title="Delete Food"
+            content="Are you sure you want to delete this food?"
+            id={_id}
+          />
         </div>
       ),
       width: "15%",
@@ -87,7 +106,7 @@ const Food = () => {
           Create new food
         </Button>{" "}
       </div>
-      <div className="w-[70%] mt-10 flex justify-center items-center">
+      <div className="w-[95%] 2xl:w-[80%] mt-10 flex justify-center items-center">
         <Table
           dataSource={data}
           columns={columns}

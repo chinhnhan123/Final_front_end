@@ -9,13 +9,16 @@ const Modals = (props) => {
       </div>
 
       <Modal
-        title="Modal 1000px width"
+        title={props.title}
         centered
         open={open}
-        onOk={() => setOpen(false)}
+        onOk={() => {
+          props.handleDeleteConfirm(props.id);
+          setOpen(false);
+        }}
         onCancel={() => setOpen(false)}
         width={400}
-        okText="Create"
+        okText={props.okText}
         okButtonProps={{
           className: "!bg-[#FDB022] hover:opacity-60 ",
         }}
@@ -23,9 +26,7 @@ const Modals = (props) => {
           className: "!border-[#FDB022] !text-[#FDB022] hover:opacity-60 ",
         }}
       >
-        <p>some contents...</p>
-        <p>some contents...</p>
-        <p>some contents...</p>
+        <p>{props.content}</p>
       </Modal>
     </>
   );

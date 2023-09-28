@@ -5,10 +5,18 @@ import {
   MessageOutlined,
   ProfileOutlined,
   HomeOutlined,
+  WindowsOutlined,
+  HeartOutlined,
+  AppleOutlined,
+  UserOutlined,
+  LoginOutlined,
+  AreaChartOutlined,
 } from "@ant-design/icons";
 import HamburgerButton from "../components/HamburgerMenuButton/HamburgerButton";
 import { AuthContext } from "../context/auth/AuthContext";
 import { useContext } from "react";
+import logo from "../assets/images/logo.jpg";
+
 const Sidebar = () => {
   const [open, setOpen] = useState(true);
   const [mobileMenu, setMobileMenu] = useState(false);
@@ -16,29 +24,46 @@ const Sidebar = () => {
   const { user } = useContext(AuthContext);
 
   let Menus = [];
-  // if (user?.role === "Farmer") {
-  //   Menus = [
-  //     { title: "Home", path: "/", src: <HomeOutlined /> },
-  //     { title: "Chat box", path: "/message", src: <MessageOutlined /> },
-  //     { title: "DashBoard", path: "/dashboard", src: <ProfileOutlined /> },
-  //     { title: "Log out", path: "/logout", src: null, gap: "true" },
-  //   ];
-  // }
-  // if (user?.role === "Admin") {
+  if (user?.role === "Farmer") {
     Menus = [
-      { title: "Guide", path: "/guide", src: <HomeOutlined /> },
-      { title: "Category", path: "/category", src: <HomeOutlined /> },
-      { title: "Food", path: "/food", src: <HomeOutlined /> },
-      { title: "Medicine", path: "/medicine", src: <HomeOutlined /> },
-      { title: "Log out", path: "/logout", src: null, gap: "true" },
+      { title: "Home", path: "/", src: <HomeOutlined /> },
+      { title: "Chat box", path: "/message", src: <MessageOutlined /> },
+      { title: "Profile", path: "/profile", src: <ProfileOutlined /> },
+      {
+        title: "Log out",
+        path: "/logout",
+        src: <LoginOutlined />,
+        gap: "true",
+      },
     ];
-  // }
-  // if (user?.role === "Trader") {
-  //   Menus = [
-  //     { title: "Home", path: "/trader", src: <ProfileOutlined /> },
-  //     { title: "Log out", path: "/logout", src: null, gap: "true" },
-  //   ];
-  // }
+  }
+  if (user?.role === "Admin") {
+    Menus = [
+      { title: "Dashboard", path: "/dashboard", src: <AreaChartOutlined /> },
+      { title: "Guide", path: "/guide", src: <HomeOutlined /> },
+      { title: "Category", path: "/category", src: <WindowsOutlined /> },
+      { title: "Food", path: "/food", src: <AppleOutlined /> },
+      { title: "Medicine", path: "/medicine", src: <HeartOutlined /> },
+      { title: "Accounts", path: "/accounts", src: <UserOutlined /> },
+      {
+        title: "Log out",
+        path: "/logout",
+        src: <LoginOutlined />,
+        gap: "true",
+      },
+    ];
+  }
+  if (user?.role === "Trader") {
+    Menus = [
+      { title: "Home", path: "/trader", src: <ProfileOutlined /> },
+      {
+        title: "Log out",
+        path: "/logout",
+        src: <LoginOutlined />,
+        gap: "true",
+      },
+    ];
+  }
   return (
     <>
       <div
@@ -53,21 +78,18 @@ const Sidebar = () => {
           } absolute fill-slate-800 text-stone-500 bg-white cursor-pointer top-9 -right-4 rounded-full`}
           onClick={() => setOpen(!open)}
         />
-        <Link to="/">
-          <div className={`flex ${open && "gap-x-4"} items-center`}>
-            <img
-              src="https://thuthuatnhanh.com/wp-content/uploads/2022/08/hinh-anh-avatar-luffy-mac-do-kimono.jpg"
-              alt=""
-              className="rounded-full w-14 h-14"
-            />
-            {open && (
-              <span className="text-lg font-extralight whitespace-nowrap dark:text-white">
-                Luffy
-              </span>
-            )}
-          </div>
-        </Link>
-
+        <div className={`flex ${open && "gap-x-2"} items-center`}>
+          <img
+            src={logo}
+            alt=""
+            className={`rounded-full w-14 h-14 ${open ? "!w-20 !h-20" : ""}`}
+          />
+          {open && (
+            <span className="text-2xl font-bold select-none text-stone-500">
+              PigCare
+            </span>
+          )}
+        </div>
         <ul className="pt-6">
           {Menus.map((menu, index) => (
             <Link to={menu.path} key={index}>
