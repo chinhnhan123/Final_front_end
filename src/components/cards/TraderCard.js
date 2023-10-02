@@ -1,18 +1,38 @@
-import React from "react";
+import React, { useContext } from "react";
 import { MessageOutlined } from "@ant-design/icons";
 import defaultAvatar from "../../assets/images/default-avatar.jpg";
 import defaultImage from "../../assets/images/pig2.jpg";
+import { useNavigate } from "react-router-dom";
+import axios from "../../http/index";
+import { AuthContext } from "../../context/auth/AuthContext";
 
 export default function TraderCard(props) {
-  console.log("🚀 ~ file: TraderCard.js:7 ~ props:", props);
-  const handleConversation = () => {
-    console.log(
-      "🚀 ~ file: TraderCard.js:9 ~ handleConversation ~ handleConversation"
+  const navigate = useNavigate();
+  const { user } = useContext(AuthContext);
+  console.log("🚀 ~ file: TraderCard.js:12 ~ user:", user);
+
+  const handleConversation = async () => {
+    const data = { idAccount: [props.idAccount, user.id] };
+    console.log("🚀 ~ file: TraderCard.js:17 ~ data:", data);
+    const checkConversation = await axios.post(
+      "http://localhost:4000/api/conversation/check",
+      data
     );
+    if (checkConversation.data) {
+      navigate(`/message?accountId=${props.idAccount}`);
+      return;
+    }
+    const res = await axios.post(
+      "http://localhost:4000/api/conversation",
+      data
+    );
+    if (res.status === 200) {
+      navigate("/message", { replace: true });
+    }
   };
 
   return (
-    <div className="w-full sm:w-[90%] min-w-[300px] bg-white p-4 rounded-lg shadow-lg">
+    <div className="w-full min-w-[300px] bg-white p-4 rounded-lg shadow-lg">
       <div className="flex">
         <div>
           <img

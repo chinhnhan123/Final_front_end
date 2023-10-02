@@ -56,6 +56,7 @@ const Sidebar = () => {
   if (user?.role === "Trader") {
     Menus = [
       { title: "Home", path: "/trader", src: <ProfileOutlined /> },
+      { title: "Chat box", path: "/message", src: <MessageOutlined /> },
       {
         title: "Log out",
         path: "/logout",
@@ -94,7 +95,7 @@ const Sidebar = () => {
           {Menus.map((menu, index) => (
             <Link to={menu.path} key={index}>
               <li
-                className={`flex items-center gap-x-6 p-3 text-base font-normal rounded-lg cursor-pointer  hover:bg-[#FDB022] hover:text-white transform
+                className={`flex items-center gap-x-6 p-2 text-base font-normal rounded-lg cursor-pointer  hover:bg-[#FDB022] hover:text-white transform
                         ${menu.gap ? "mt-9" : "mt-2"} ${
                   location.pathname === menu.path && "bg-[#FDB022] text-white"
                 }`}

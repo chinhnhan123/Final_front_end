@@ -8,12 +8,16 @@ import axios from "axios";
 import { getChat, getConversation } from "../services/api/messageAPI";
 import { AuthContext } from "../context/auth/AuthContext";
 import socketIO from "socket.io-client";
+import { useLocation } from "react-router-dom";
 
 const Home = () => {
+  const location = useLocation();
+  const searchParams = new URLSearchParams(location.search);
+  const accountId = searchParams.get("accountId");
   const [conversations, setConversations] = useState([]);
   const [currentChat, setCurrentChat] = useState(null);
   const [messages, setMessages] = useState([]);
-  const [arrivalMessage, setArrivalMessage] = useState(null);
+  const [arrivalMessage, setArrivalMessage] = useState();
   const [onlineUsers, setOnlineUsers] = useState([]);
   const [allUsers, setAllUsers] = useState([]);
   const scrollRef = useRef();
@@ -24,15 +28,28 @@ const Home = () => {
 
   useEffect(() => {
     socket.current.on("getMessage", (data) => {
+      console.log("🚀 ~ file: MessagePage.js:31 ~ data:", data);
       setArrivalMessage({
         sender: data.senderId,
         content: data.content,
         createdAt: new Date(),
       });
+      // setMessages((mes) => [
+      //   ...mes,
+      //   {
+      //     sender: data.senderId,
+      //     content: data.content,
+      //     createdAt: new Date(),
+      //   },
+      // ]);
     });
   }, []);
 
   useEffect(() => {
+    console.log(
+      "🚀 ~ file: MessagePage.js:46 ~ arrivalMessage:",
+      arrivalMessage
+    );
     arrivalMessage &&
       currentChat?.idAccount.includes(arrivalMessage.sender) &&
       setMessages((mes) => [...mes, arrivalMessage]);
@@ -42,6 +59,7 @@ const Home = () => {
     const getConversations = async () => {
       try {
         const res = await getConversation(user.id);
+        console.log("🚀 ~ file: MessagePage.js:49 ~ res:", res);
         setConversations(res.data);
       } catch (err) {
         console.log(err);
@@ -65,7 +83,7 @@ const Home = () => {
       return conversations.some((item) => item.idAccount.includes(user.userId));
     });
     setOnlineUsers(filteredUsers);
-  }, [allUsers, conversations]);
+  }, [allUsers, conversations, currentChat]);
 
   useEffect(() => {
     const getMessages = async () => {
@@ -81,9 +99,29 @@ const Home = () => {
 
   useEffect(() => {}, [currentChat]);
 
+  // useEffect(() => {
+  //   setCurrentChat(conversations[0]);
+  // }, [conversations]);
+
   useEffect(() => {
+    if (accountId && conversations.length > 0) {
+      let chatIndex = -1;
+      conversations.some((item, index) => {
+        if (item.idAccount.includes(accountId)) {
+          chatIndex = index;
+          return true;
+        }
+        return false;
+      });
+
+      if (chatIndex !== -1) {
+        setCurrentChat(conversations[chatIndex]);
+        return;
+      }
+      return;
+    }
     setCurrentChat(conversations[0]);
-  }, [conversations]);
+  }, [accountId, conversations]);
 
   useEffect(() => {
     scrollRef.current?.scrollIntoView({ behavior: "smooth" });

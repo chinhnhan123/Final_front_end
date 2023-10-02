@@ -17,7 +17,7 @@ export default function Home() {
   }, []);
 
   return (
-    <div className="p-3 md:px-14 md:py-7">
+    <div className="p-3 md:px-8 md:py-4">
       <div className="flex justify-center mb-16">
         <div className="flex items-center mt-10">
           <div className="flex space-x-1 w-[400px] 2xl:w-[500px]">
@@ -45,7 +45,7 @@ export default function Home() {
           </div>
         </div>
       </div>
-      <div className="grid grid-cols-1 mb-8 sm:gap-x-2 gap-y-8 md:grid-cols-2 2xl:grid-cols-3">
+      <div className="grid grid-cols-1 mb-8 sm:gap-x-4 gap-y-8 md:grid-cols-2 2xl:grid-cols-3">
         {data?.map((item) => (
           <TraderCard
             key={item._id}
