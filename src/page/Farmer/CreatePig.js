@@ -1,10 +1,13 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
+
+import { getCategoryInGuide as getCategoryInGuideAPI } from "../../services/api/category";
+import { createHerd } from "../../services/api/herd";
 import "./style/createPig.css";
-import axios from "../../http/index";
-import { useNavigate } from "react-router-dom";
+
 const schema = yup.object().shape({
   name: yup.string().required("Name is required"),
   category: yup.string().required("Category is required"),
@@ -31,9 +34,7 @@ const CreatePig = () => {
   const idAccount = JSON.parse(localStorage.getItem("user"));
   const getCategoryInGuide = async () => {
     try {
-      const res = await axios.get(
-        `http://localhost:4000/api/category/category-in-guide`
-      );
+      const res = await getCategoryInGuideAPI();
       if (res.status === 200) {
         setCategoryInGuide(res?.data);
       }
@@ -54,11 +55,7 @@ const CreatePig = () => {
     formData.append("quantity", data.quantity);
     formData.append("file", data.image[0]);
 
-    const res = await axios.post("http://localhost:4000/api/herd", formData, {
-      headers: {
-        "Content-Type": "multipart/form-data",
-      },
-    });
+    const res = await createHerd(formData);
 
     if (res.status === 200) {
       navigate("/", { replace: true });

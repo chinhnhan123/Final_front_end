@@ -1,13 +1,19 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import { Steps } from "antd";
+
 import Button from "../../../components/core/Button";
 import FormStage1 from "../../../components/form/FormStage1";
 import FormStage2 from "../../../components/form/FormStage2";
 import FormStage3 from "../../../components/form/FormStage3";
-import axios from "../../../http/index";
-import { useNavigate, useParams } from "react-router-dom";
 
 import { PlusCircleFilled } from "@ant-design/icons";
+import {
+  getGuideByCategory,
+  updateGuide as updateGuideAPI,
+} from "../../../services/api/guide";
+import { getFood as getFoodAPI } from "../../../services/api/food";
+import { getMedicine as getMedicineAPI } from "../../../services/api/medicine";
 
 const guideData = {
   food: [],
@@ -21,7 +27,6 @@ const UpdateGuide = () => {
   const { idCategory } = useParams();
 
   const [stage1, setStage1] = useState(guideData);
-  console.log("🚀 ~ file: UpdateGuide.js:24 ~ stage1:", stage1);
   const [stage2, setStage2] = useState(guideData);
   const [stage3, setStage3] = useState(guideData);
 
@@ -31,9 +36,7 @@ const UpdateGuide = () => {
 
   const getGuide = async () => {
     try {
-      const guidesRes = await axios.get(
-        `http://localhost:4000/api/guide/${idCategory}`
-      );
+      const guidesRes = await getGuideByCategory(idCategory);
       setGuide(
         guidesRes?.data.sort((a, b) => a.idStage.idStage - b.idStage.idStage)
       );
@@ -43,12 +46,12 @@ const UpdateGuide = () => {
   };
 
   const getFood = async () => {
-    const res = await axios.get("http://localhost:4000/api/food");
+    const res = await getFoodAPI();
     setFood([...res.data]);
   };
 
   const getMedicine = async () => {
-    const res = await axios.get("http://localhost:4000/api/medicine");
+    const res = await getMedicineAPI();
     setMedicine([...res.data]);
   };
 
@@ -149,8 +152,7 @@ const UpdateGuide = () => {
       notes: stage3.notes,
     };
 
-    console.log(payload);
-    const res = await axios.put("http://localhost:4000/api/guide", payload);
+    const res = await updateGuideAPI(payload);
     console.log("🚀 ~ file: UpdateGuide.js:154 ~ res:", res);
     if (res.status === 200) {
       navigate("/guide", { replace: true });

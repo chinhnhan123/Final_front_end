@@ -5,6 +5,10 @@ import defaultImage from "../../assets/images/pig2.jpg";
 import { useNavigate } from "react-router-dom";
 import axios from "../../http/index";
 import { AuthContext } from "../../context/auth/AuthContext";
+import {
+  checkConversation as checkConversationAPI,
+  createConversation,
+} from "../../services/api/messageAPI";
 
 export default function TraderCard(props) {
   const navigate = useNavigate();
@@ -13,19 +17,13 @@ export default function TraderCard(props) {
 
   const handleConversation = async () => {
     const data = { idAccount: [props.idAccount, user.id] };
-    console.log("🚀 ~ file: TraderCard.js:17 ~ data:", data);
-    const checkConversation = await axios.post(
-      "http://localhost:4000/api/conversation/check",
-      data
-    );
+
+    const checkConversation = await checkConversationAPI(data);
     if (checkConversation.data) {
       navigate(`/message?accountId=${props.idAccount}`);
       return;
     }
-    const res = await axios.post(
-      "http://localhost:4000/api/conversation",
-      data
-    );
+    const res = await createConversation(data);
     if (res.status === 200) {
       navigate("/message", { replace: true });
     }
@@ -45,9 +43,9 @@ export default function TraderCard(props) {
           <h1 className="text-2xl font-semibold">
             {props.name || "Name pigs"}
           </h1>
-          <div className="flex justify-between w-[90%]">
-            <p className="inline-block text-base max-w-[190px] truncate font-extralight ">
-              {props.namePig || "đàn heo nái tháng 9  đàn heo nái tháng 9"}
+          <div className="flex justify-between">
+            <p className="inline-block text-base max-w-[145px] truncate font-extralight ">
+              {props.namePig || "đàn heo nái tháng 9"}
             </p>
             <p className="flex mr-2 text-base font-medium">
               Thể loại:{" "}

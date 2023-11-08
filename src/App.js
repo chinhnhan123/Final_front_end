@@ -2,6 +2,7 @@ import { Fragment } from "react";
 import { Route, Routes } from "react-router-dom";
 import Register from "./page/Register";
 import Login from "./page/Login";
+import Payment from "./page/Payment";
 import MessagePage from "./page/MessagePage";
 import Main from "./layout/Main";
 import Dashboard from "./page/Admin/Dashboard";
@@ -24,6 +25,7 @@ import CreatePig from "./page/Farmer/CreatePig";
 import UpdatePig from "./page/Farmer/UpdatePig";
 import DetailPig from "./page/Farmer/DetailPig";
 import Profile from "./page/Farmer/Profile";
+import ChatBot from "./page/Farmer/ChatBot";
 import HomeTrader from "./page/trader/Home";
 function App({ socket }) {
   return (
@@ -69,6 +71,8 @@ function App({ socket }) {
           <Route path="/update-pig/:id" element={<UpdatePig />}></Route>
           <Route path="/detail-pig/:id" element={<DetailPig />}></Route>
           <Route path="/profile" element={<Profile />}></Route>
+          <Route path="/chat-bot" element={<ChatBot />}></Route>
+          {/* <Route path="/payment" element={<Payment />}></Route> */}
 
           <Route path="/trader" element={<HomeTrader />}></Route>
         </Route>

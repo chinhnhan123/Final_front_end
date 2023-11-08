@@ -3,16 +3,19 @@ import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
 import Button from "../../../components/core/Button";
 import { PlusOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router";
-import axios from "../../../http/index";
 import Modals from "../../../components/modal/CreateModal";
 
 import Table from "../../../components/table/Table";
+import {
+  getCategory as getCategoryAPI,
+  deleteCategory,
+} from "../../../services/api/category";
 const Category = () => {
   const navigate = useNavigate();
   const [data, setData] = useState([]);
   useEffect(() => {
     const getCategory = async () => {
-      const res = await axios.get("http://localhost:4000/api/category");
+      const res = await getCategoryAPI();
       setData([...res.data]);
     };
     getCategory();
@@ -20,9 +23,9 @@ const Category = () => {
 
   const handleDeleteConfirm = async (id) => {
     try {
-      await axios.delete(`http://localhost:4000/api/category/${id}`);
+      await deleteCategory(id);
       // Refresh data after successful deletion
-      const res = await axios.get("http://localhost:4000/api/category");
+      const res = await getCategoryAPI();
       setData([...res.data]);
     } catch (error) {
       console.error("Error deleting category:", error);

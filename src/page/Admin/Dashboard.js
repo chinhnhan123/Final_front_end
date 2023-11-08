@@ -1,10 +1,30 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import moment from "moment";
+
 import InfoCard from "../../components/cards/InfoCard";
+import DemoLine from "../../components/charts/LineChart";
+import DemoPie from "../../components/charts/PlotChart";
+import { getHerd as getHerdAPI } from "../../services/api/herd";
 
 const Dashboard = () => {
+  const [data, setData] = useState([]);
+  useEffect(() => {
+    const getHerd = async () => {
+      const res = await getHerdAPI();
+
+      const dataRes = res.data.data.map((item) => {
+        return {
+          date: moment(item.createdAt).format("DD-MM-YYYY"),
+          Quantity: item.quantity,
+        };
+      });
+      setData(dataRes);
+    };
+    getHerd();
+  }, []);
   return (
-    <div className="relative w-full">
-      <div className="w-full h-40 bg-sky-700 -z-10 "></div>
+    <div className="relative w-full bg-slate-50">
+      <div className="w-full h-40 bg-sky-700 -z-1000 "></div>
       <div className="flex items-center justify-center gap-20 mb-8 -translate-y-14 ">
         <InfoCard title="Total farmer:" value="6389">
           <img
@@ -20,7 +40,7 @@ const Dashboard = () => {
             className="rounded-full w-14 h-14"
           />
         </InfoCard>
-        <InfoCard title="Total trader VIP:" value="89">
+        <InfoCard title="Total VIP:" value="89">
           <img
             src="https://cdn-icons-png.flaticon.com/512/7186/7186453.png"
             alt="VIP"
@@ -28,8 +48,14 @@ const Dashboard = () => {
           />
         </InfoCard>
       </div>
-      <div className="absolute px-3 py-2 font-medium bg-white rounded-lg cursor-pointer top-10 right-10">
+      {/* <div className="absolute px-3 py-2 font-medium bg-white rounded-lg cursor-pointer top-10 right-10">
         Create a new account
+      </div> */}
+      <div className="flex items-center justify-center">
+        <DemoLine data={data} />
+      </div>
+      <div className="flex items-center justify-center mt-10 pb-20">
+        <DemoPie />
       </div>
     </div>
   );

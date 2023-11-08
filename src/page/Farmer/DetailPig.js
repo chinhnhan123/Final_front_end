@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { Tabs, Collapse } from "antd";
 import { ArrowLeftOutlined } from "@ant-design/icons";
-import "./style/detailPig.css";
 import { useNavigate, useParams } from "react-router-dom";
-import axios from "../../http/index";
-import { enqueueSnackbar } from "notistack";
+
+import "./style/detailPig.css";
+import { getGuideByCategory } from "../../services/api/guide";
+import { getHerdById } from "../../services/api/herd";
 
 const { TabPane } = Tabs;
 
@@ -12,11 +13,10 @@ const DetailPig = () => {
   const { id } = useParams();
   const [data, setData] = useState();
   const [guide, setGuide] = useState([]);
-  console.log("🚀 ~ file: DetailPig.js:16 ~ guide:", guide);
   const navigate = useNavigate();
   const getPigDetails = async () => {
     try {
-      const res = await axios.get(`http://localhost:4000/api/herd/${id}`);
+      const res = await getHerdById(id);
       setData(res.data);
       getGuides(res.data.idCategory._id);
     } catch (error) {
@@ -26,9 +26,7 @@ const DetailPig = () => {
 
   const getGuides = async (categoryId) => {
     try {
-      const guidesRes = await axios.get(
-        `http://localhost:4000/api/guide/${categoryId}`
-      );
+      const guidesRes = await getGuideByCategory(categoryId);
       setGuide(
         guidesRes?.data.sort((a, b) => a.idStage.idStage - b.idStage.idStage)
       );

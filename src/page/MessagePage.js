@@ -1,14 +1,16 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import logo from "../assets/images/logo.png";
+import { useEffect, useState, useRef, useContext } from "react";
+import { useLocation } from "react-router-dom";
+import socketIO from "socket.io-client";
+
 import User from "../components/messages/User";
 import HeaderChat from "../components/messages/HeaderChat";
 import Message from "../components/messages/Message";
-import { useEffect, useState, useRef, useContext } from "react";
-import axios from "axios";
+
 import { getChat, getConversation } from "../services/api/messageAPI";
 import { AuthContext } from "../context/auth/AuthContext";
-import socketIO from "socket.io-client";
-import { useLocation } from "react-router-dom";
+import { createChat } from "../services/api/messageAPI";
+import logo from "../assets/images/logo.png";
 
 const Home = () => {
   const location = useLocation();
@@ -28,7 +30,6 @@ const Home = () => {
 
   useEffect(() => {
     socket.current.on("getMessage", (data) => {
-      console.log("🚀 ~ file: MessagePage.js:31 ~ data:", data);
       setArrivalMessage({
         sender: data.senderId,
         content: data.content,
@@ -46,10 +47,6 @@ const Home = () => {
   }, []);
 
   useEffect(() => {
-    console.log(
-      "🚀 ~ file: MessagePage.js:46 ~ arrivalMessage:",
-      arrivalMessage
-    );
     arrivalMessage &&
       currentChat?.idAccount.includes(arrivalMessage.sender) &&
       setMessages((mes) => [...mes, arrivalMessage]);
@@ -59,7 +56,6 @@ const Home = () => {
     const getConversations = async () => {
       try {
         const res = await getConversation(user.id);
-        console.log("🚀 ~ file: MessagePage.js:49 ~ res:", res);
         setConversations(res.data);
       } catch (err) {
         console.log(err);
@@ -148,7 +144,7 @@ const Home = () => {
     });
 
     try {
-      const res = await axios.post(`http://localhost:4000/api/chat/`, message);
+      const res = await createChat(message);
       setMessages([...messages, res.data]);
       inputMessage.current.value = "";
     } catch (err) {

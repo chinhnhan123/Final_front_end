@@ -1,11 +1,12 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
-import axios from "../../../http/index";
-import { useNavigate } from "react-router-dom";
 
 import "../style/createMedicine.css";
+import { createMedicine } from "../../../services/api/medicine";
+
 const schema = yup.object().shape({
   name: yup.string().required("Name is required"),
   types: yup.string().required("Types is required"),
@@ -32,15 +33,7 @@ const CreateMedicine = () => {
     formData.append("description", data.description);
     formData.append("instruction", data.instruction);
     formData.append("file", data.image[0]);
-    const res = await axios.post(
-      "http://localhost:4000/api/medicine",
-      formData,
-      {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      }
-    );
+    const res = await createMedicine(formData);
     if (res.status === 200) {
       navigate("/medicine", { replace: true });
     }
@@ -138,7 +131,7 @@ const CreateMedicine = () => {
               type="submit"
               className="px-4 py-2  text-white bg-[#FDB022] rounded hover:opacity-80"
             >
-              Add pigs
+              Add Medicine
             </button>
           </div>
         </form>

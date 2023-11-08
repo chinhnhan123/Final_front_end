@@ -1,18 +1,22 @@
 import React, { useEffect, useState } from "react";
-import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
-import Button from "../../../components/core/Button";
-import { PlusOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router";
-import axios from "../../../http/index";
-import Modals from "../../../components/modal/CreateModal";
 
+import Modals from "../../../components/modal/CreateModal";
+import Button from "../../../components/core/Button";
 import Table from "../../../components/table/Table";
+import {
+  getMedicine as getMedicineApi,
+  deleteMedicine,
+} from "../../../services/api/medicine";
+
+import { DeleteOutlined, EditOutlined, PlusOutlined } from "@ant-design/icons";
+
 const Medicine = () => {
   const navigate = useNavigate();
   const [data, setData] = useState([]);
   useEffect(() => {
     const getMedicine = async () => {
-      const res = await axios.get("http://localhost:4000/api/medicine");
+      const res = await getMedicineApi();
       setData([...res.data]);
     };
     getMedicine();
@@ -20,9 +24,9 @@ const Medicine = () => {
 
   const handleDeleteConfirm = async (id) => {
     try {
-      await axios.delete(`http://localhost:4000/api/medicine/${id}`);
+      await deleteMedicine(id);
       // Refresh data after successful deletion
-      const res = await axios.get("http://localhost:4000/api/medicine");
+      const res = await getMedicineApi();
       setData([...res.data]);
     } catch (error) {
       console.error("Error deleting medicine:", error);

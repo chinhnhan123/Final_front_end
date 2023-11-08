@@ -11,29 +11,47 @@ import {
   UserOutlined,
   LoginOutlined,
   AreaChartOutlined,
+  AndroidOutlined,
 } from "@ant-design/icons";
 import HamburgerButton from "../components/HamburgerMenuButton/HamburgerButton";
 import { AuthContext } from "../context/auth/AuthContext";
 import { useContext } from "react";
 import logo from "../assets/images/logo.jpg";
+import rocket from "../assets/images/startup.png";
+import Payment from "../components/paymentStripe/Payment";
+import StripeCheckout from "react-stripe-checkout";
 
 const Sidebar = () => {
   const [open, setOpen] = useState(true);
   const [mobileMenu, setMobileMenu] = useState(false);
   const location = useLocation();
   const { user } = useContext(AuthContext);
-
+  const stripeKey =
+    "sk_test_51Ny3rpFX2CDVz062Nqo3OfXOdc2Go5tMuAp7MrLAh3C8NN7v4qV1vI0ir9OG6Dsgfa7IrVxFx6frK06YSaSLZFGE00I51hHabP";
+  const handleToken = async (token, adresses) => {
+    console.log(
+      "🚀 ~ file: Payment.js:6 ~ handleToken ~ token:",
+      token,
+      adresses
+    );
+  };
+  const handleLogout = () => {
+    console.log("🚀 ~ file: SideBar.js:29 ~ handleLogout ~ handleLogout:");
+    localStorage.clear();
+  };
   let Menus = [];
   if (user?.role === "Farmer") {
     Menus = [
       { title: "Home", path: "/", src: <HomeOutlined /> },
       { title: "Chat box", path: "/message", src: <MessageOutlined /> },
       { title: "Profile", path: "/profile", src: <ProfileOutlined /> },
+      { title: "Chat With AI", path: "/chat-bot", src: <AndroidOutlined /> },
       {
         title: "Log out",
-        path: "/logout",
+        path: "/login",
         src: <LoginOutlined />,
         gap: "true",
+        handleLogout: "true",
       },
     ];
   }
@@ -47,9 +65,10 @@ const Sidebar = () => {
       { title: "Accounts", path: "/accounts", src: <UserOutlined /> },
       {
         title: "Log out",
-        path: "/logout",
+        path: "/login",
         src: <LoginOutlined />,
         gap: "true",
+        handleLogout: "true",
       },
     ];
   }
@@ -59,9 +78,10 @@ const Sidebar = () => {
       { title: "Chat box", path: "/message", src: <MessageOutlined /> },
       {
         title: "Log out",
-        path: "/logout",
+        path: "/login",
         src: <LoginOutlined />,
         gap: "true",
+        handleLogout: "true",
       },
     ];
   }
@@ -69,14 +89,14 @@ const Sidebar = () => {
     <>
       <div
         className={`${
-          open ? "w-60" : "w-fit"
+          open ? "w-60" : "w-[100px]"
         } hidden sm:block relative h-screen duration-300 bg-[#FFFAEB] border-r border-gray-200 dark:border-gray-600 p-5 dark:bg-slate-800`}
       >
         <LeftCircleOutlined
           style={{ fontSize: "32px" }}
           className={`${
             !open && "rotate-180"
-          } absolute fill-slate-800 text-stone-500 bg-white cursor-pointer top-9 -right-4 rounded-full`}
+          } absolute fill-slate-800 text-stone-500 bg-white cursor-pointer top-1 -right-4 rounded-full`}
           onClick={() => setOpen(!open)}
         />
         <div className={`flex ${open && "gap-x-2"} items-center`}>
@@ -99,6 +119,7 @@ const Sidebar = () => {
                         ${menu.gap ? "mt-9" : "mt-2"} ${
                   location.pathname === menu.path && "bg-[#FDB022] text-white"
                 }`}
+                onClick={() => menu?.handleLogout && handleLogout()}
               >
                 <span className="pb-3 text-2xl">{menu?.src}</span>
                 <span
@@ -112,6 +133,39 @@ const Sidebar = () => {
             </Link>
           ))}
         </ul>
+
+        {open
+          ? user?.role == "Farmer" && (
+              <div className="absolute bottom-0 left-0 right-0 px-2 py-5 m-3 flex bg-cyan-100 rounded-lg ">
+                <div className="w-[60%]">
+                  <p className="mb-3 text-lg font-normal line leading-5">
+                    {" "}
+                    Upgrade to Pro
+                  </p>
+                  <span className="px-3 py-2 bg-sky-700 hover:opacity-50 cursor-pointer rounded-lg text-white ">
+                    <StripeCheckout
+                      stripeKey={stripeKey}
+                      description="Please fill in the details below"
+                      image={logo}
+                      billingAddress
+                      amount={15 * 100}
+                      currency="USD"
+                      name="Update to Pro Version"
+                    >
+                      Buy Pro
+                    </StripeCheckout>
+                  </span>
+                </div>
+                <div className="w-[40%]">
+                  <img className="w-24" src={rocket} alt="rocket" />
+                </div>
+              </div>
+            )
+          : user?.role == "Farmer" && (
+              <div className="absolute bottom-0 left-0 right-0 px-2 py-5 mt-5 ml-3 ">
+                <img className="w-12" src={rocket} alt="rocket" />
+              </div>
+            )}
       </div>
       {/* Mobile Menu */}
       <div className="pt-3">
@@ -137,6 +191,7 @@ const Sidebar = () => {
                   location.pathname === menu.path &&
                   "bg-gray-200 dark:bg-gray-700"
                 } p-2 rounded-xl hover:bg-gray-200 dark:hover:bg-gray-700`}
+                onClick={() => menu?.handleLogout && handleLogout()}
               >
                 {menu.title}
               </span>

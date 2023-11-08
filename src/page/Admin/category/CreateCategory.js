@@ -1,9 +1,10 @@
 import React from "react";
-import axios from "../../../http/index";
+import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
-import { useNavigate } from "react-router-dom";
+
+import { createCategory } from "../../../services/api/category";
 
 const schema = yup.object().shape({
   nameCategory: yup.string().required("Category name is required"),
@@ -23,7 +24,7 @@ const CreateCategory = () => {
   const navigate = useNavigate();
 
   const onSubmit = async (data) => {
-    const res = await axios.post("http://localhost:4000/api/category", data);
+    const res = await createCategory(data);
     if (res.status === 200) {
       navigate("/category", { replace: true });
     }

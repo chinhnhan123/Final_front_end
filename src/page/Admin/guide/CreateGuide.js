@@ -1,13 +1,17 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import { Steps } from "antd";
+
 import Button from "../../../components/core/Button";
 import FormStage1 from "../../../components/form/FormStage1";
 import FormStage2 from "../../../components/form/FormStage2";
 import FormStage3 from "../../../components/form/FormStage3";
-import axios from "../../../http/index";
-import { useNavigate, useParams } from "react-router-dom";
 
 import { PlusCircleFilled } from "@ant-design/icons";
+
+import { getFood as getFoodAPI } from "../../../services/api/food";
+import { getMedicine as getMedicineAPI } from "../../../services/api/medicine";
+import { createGuide } from "../../../services/api/guide";
 
 const guideData = {
   food: [],
@@ -28,7 +32,7 @@ const CreateGuide = () => {
   const [medicine, setMedicine] = useState([]);
   useEffect(() => {
     const getFood = async () => {
-      const res = await axios.get("http://localhost:4000/api/food");
+      const res = await getFoodAPI();
       setFood([...res.data]);
     };
     getFood();
@@ -36,7 +40,7 @@ const CreateGuide = () => {
 
   useEffect(() => {
     const getMedicine = async () => {
-      const res = await axios.get("http://localhost:4000/api/medicine");
+      const res = await getMedicineAPI();
       setMedicine([...res.data]);
     };
     getMedicine();
@@ -91,8 +95,6 @@ const CreateGuide = () => {
   };
 
   const onDone = async () => {
-    console.log(stage1);
-    console.log(stage2);
     const payload = {
       stage1: {
         idFood: stage1.food,
@@ -113,8 +115,7 @@ const CreateGuide = () => {
         notes: stage3.notes,
       },
     };
-    console.log(payload);
-    const res = await axios.post("http://localhost:4000/api/guide", payload);
+    const res = await createGuide(payload);
     if (res.status === 200) {
       navigate("/guide", { replace: true });
     }
@@ -122,7 +123,6 @@ const CreateGuide = () => {
 
   const renderFooter = () => (
     <div className="px-8 text-end">
-      {" "}
       <Button
         type={current === 0 ? "primary" : "default"}
         suffix={current === 0 && <PlusCircleFilled />}

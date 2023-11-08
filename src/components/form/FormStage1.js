@@ -1,5 +1,4 @@
 import React from "react";
-// import axios from "../../../http/index";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import "./index.css";
@@ -12,7 +11,6 @@ const schema = yup.object().shape({
 });
 
 const Stage1 = ({ foodSelect, medicineSelect, stage1, setStage1 }) => {
-  console.log("🚀 ~ file: FormStage1.js:15 ~ stage1:", stage1);
   const {
     register,
     formState: { errors },

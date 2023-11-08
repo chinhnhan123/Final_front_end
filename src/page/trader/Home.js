@@ -1,20 +1,38 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import TraderCard from "../../components/cards/TraderCard";
-import { useNavigate } from "react-router";
 import axios from "../../http/index";
+import { Pagination } from "antd";
 
 export default function Home() {
   const [data, setData] = useState([]);
-  console.log("🚀 ~ file: Home.js:8 ~ data:", data);
-  const navigate = useNavigate();
+  const [total, setTotal] = useState(0);
+  const [current, setCurrent] = useState(1);
+  const inputMessage = useRef();
 
   useEffect(() => {
     const getHerd = async () => {
-      const res = await axios.get(`http://localhost:4000/api/herd/`);
-      setData([...res.data]);
+      const res = await axios.get(`http://localhost:4000/api/herd`);
+      console.log("🚀 ~ file: Home.js:19 ~ getHerd ~ res:", res);
+      setData([...res.data.data]);
+      setTotal(res.data.totalDocs);
     };
     getHerd();
   }, []);
+
+  const onChange = async (page) => {
+    const res = await axios.get(`http://localhost:4000/api/herd?page=${page}`);
+    setData([...res.data.data]);
+    setTotal(res.data.totalDocs);
+    setCurrent(page);
+  };
+
+  const handleSearch = async () => {
+    const res = await axios.get(
+      `http://localhost:4000/api/herd?searchTerm=${inputMessage.current.value}`
+    );
+    setData([...res.data.data]);
+    setTotal(res.data.totalDocs);
+  };
 
   return (
     <div className="p-3 md:px-8 md:py-4">
@@ -25,8 +43,12 @@ export default function Home() {
               type="text"
               className="block w-full px-4 py-2 text-black bg-white border rounded-full xl:px-6 xl:py-3 focus:border-[#FDB022] focus:ring-[#FDB022] focus:outline-none focus:ring focus:ring-opacity-40"
               placeholder="Search..."
+              ref={inputMessage}
             />
-            <button className="px-4 text-white bg-[#FDB022] rounded-full xl:px-6 cursor-pointer ">
+            <button
+              onClick={handleSearch}
+              className="px-4 text-white bg-[#FDB022] rounded-full xl:px-6 cursor-pointer "
+            >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 className="w-5 h-5"
@@ -49,14 +71,16 @@ export default function Home() {
         {data?.map((item) => (
           <TraderCard
             key={item._id}
-            idAccount={item.idAccount._id}
-            name={item.idAccount.fullName}
+            idAccount={item.accountInfo[0]._id}
+            name={item.accountInfo[0].fullName}
             namePig={item.name}
             quantity={item.quantity}
             image={item.urlImage}
+            category={item.categoryInfo[0].nameCategory}
           />
         ))}
       </div>
+      <Pagination current={current} onChange={onChange} total={total} />
     </div>
   );
 }

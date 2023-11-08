@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
-import { useNavigate, useParams } from "react-router-dom";
-import axios from "../../http/index";
 import { enqueueSnackbar } from "notistack";
-
+import { getHerdById, updateHerd } from "../../services/api/herd";
+import { getCategoryInGuide as getCategoryInGuideAPI } from "../../services/api/category";
 const schema = yup.object().shape({
   name: yup.string().required("Name is required"),
   category: yup.string().required("Category is required"),
@@ -34,11 +34,9 @@ const UpdatePig = () => {
 
   const getCategoryInGuide = async () => {
     try {
-      const res = await axios.get(
-        `http://localhost:4000/api/category/category-in-guide`
-      );
+      const res = await getCategoryInGuideAPI();
       if (res.status === 200) {
-        setCategoryInGuide(res?.data);
+        setCategoryInGuide(res?.data || []);
       }
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -47,9 +45,8 @@ const UpdatePig = () => {
 
   const getPigDetails = async () => {
     try {
-      const res = await axios.get(`http://localhost:4000/api/herd/${id}`);
+      const res = await getHerdById(id);
       const PigData = res.data;
-
       // Set initial form values
       setValue("name", PigData.name);
       setValue("category", PigData.idCategory._id);
@@ -78,15 +75,7 @@ const UpdatePig = () => {
     }
 
     try {
-      const res = await axios.patch(
-        `http://localhost:4000/api/herd/${id}`,
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      );
+      const res = await updateHerd(id, formData);
       if (res.status === 200) {
         navigate("/");
       } else {
@@ -152,7 +141,7 @@ const UpdatePig = () => {
               {...register("category")}
               className="w-full px-4 py-2 border border-gray-300 rounded"
             >
-              {categoryInGuide.map((category) => (
+              {categoryInGuide?.map((category) => (
                 <option key={category._id} value={category._id}>
                   {category.nameCategory}
                 </option>

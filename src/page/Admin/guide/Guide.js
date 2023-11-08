@@ -1,9 +1,15 @@
 import React, { useEffect, useState } from "react";
-import axios from "../../../http/index";
 import { useNavigate } from "react-router";
 import { Tabs, Collapse } from "antd";
-import { PlusOutlined } from "@ant-design/icons";
+
 import Modals from "../../../components/modal/SelectCategoriesModal";
+import { PlusOutlined } from "@ant-design/icons";
+import {
+  getCategoryInGuide as getCategoryInGuideAPI,
+  getCategoryNotInGuide as getCategoryNotInGuideAPI,
+} from "../../../services/api/category";
+import { getGuideById } from "../../../services/api/guide";
+
 const { TabPane } = Tabs;
 
 const Guide = () => {
@@ -15,9 +21,7 @@ const Guide = () => {
 
   const getCategoryInGuide = async () => {
     try {
-      const res = await axios.get(
-        `http://localhost:4000/api/category/category-in-guide`
-      );
+      const res = await getCategoryInGuideAPI();
       if (res.status === 200) {
         setCategoryInGuide(res?.data);
         getGuides(res?.data[0]?._id);
@@ -30,9 +34,7 @@ const Guide = () => {
 
   const getCategoriesNotInGuide = async () => {
     try {
-      const res = await axios.get(
-        `http://localhost:4000/api/category/category-not-in-guide`
-      );
+      const res = await getCategoryNotInGuideAPI();
       if (res.status === 200) {
         setCategoriesNotInGuide(res?.data);
       }
@@ -48,9 +50,7 @@ const Guide = () => {
 
   const getGuides = async (categoryId) => {
     try {
-      const guidesRes = await axios.get(
-        `http://localhost:4000/api/guide/${categoryId}`
-      );
+      const guidesRes = await getGuideById(categoryId);
       setGuide(
         guidesRes?.data.sort((a, b) => a.idStage.idStage - b.idStage.idStage)
       );

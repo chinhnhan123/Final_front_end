@@ -1,10 +1,13 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
-import axios from "../../../http/index";
-import { useNavigate, useParams } from "react-router-dom";
 
+import {
+  getMedicineById,
+  updateMedicine,
+} from "../../../services/api/medicine";
 import "../style/createMedicine.css";
 
 const schema = yup.object().shape({
@@ -31,7 +34,7 @@ const UpdateMedicine = () => {
 
   const fetchMedicineData = async () => {
     try {
-      const res = await axios.get(`http://localhost:4000/api/medicine/${id}`);
+      const res = await getMedicineById(id);
       const { nameMedicine, types, description, instruction, urlImage } =
         res.data;
       setValue("name", nameMedicine);
@@ -60,15 +63,7 @@ const UpdateMedicine = () => {
       formData.append("img", selectedImage);
     }
     try {
-      const res = await axios.put(
-        `http://localhost:4000/api/medicine/${id}`,
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      );
+      const res = await updateMedicine(id, formData);
       if (res.status === 200) {
         navigate("/medicine", { replace: true });
       }

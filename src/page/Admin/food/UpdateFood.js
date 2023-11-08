@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import axios from "../../../http/index";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { enqueueSnackbar } from "notistack";
+
+import { getFoodById, updateFood } from "../../../services/api/food";
 
 const schema = yup.object().shape({
   name: yup.string().required("Name is required"),
@@ -29,7 +30,7 @@ const UpdateFood = () => {
   useEffect(() => {
     const getFoodDetails = async () => {
       try {
-        const res = await axios.get(`http://localhost:4000/api/food/${id}`);
+        const res = await getFoodById(id);
         const foodData = res.data;
 
         // Set initial form values
@@ -57,15 +58,7 @@ const UpdateFood = () => {
     }
 
     try {
-      const res = await axios.patch(
-        `http://localhost:4000/api/food/${id}`,
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      );
+      const res = await updateFood(id, formData);
       if (res.status === 200) {
         navigate("/food");
       }

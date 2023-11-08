@@ -1,9 +1,10 @@
 import React, { useState } from "react";
-import axios from "../../../http/index";
+import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
-import { useNavigate } from "react-router-dom";
+
+import { createFood } from "../../../services/api/food";
 
 import "../style/createFood.css";
 const schema = yup.object().shape({
@@ -29,11 +30,7 @@ const CreateFood = () => {
     formData.append("description", data.description);
     formData.append("file", data.image[0]);
 
-    const res = await axios.post("http://localhost:4000/api/food", formData, {
-      headers: {
-        "Content-Type": "multipart/form-data",
-      },
-    });
+    const res = await createFood(formData);
     if (res.status === 200) {
       navigate("/food", { replace: true });
     }
@@ -107,7 +104,7 @@ const CreateFood = () => {
               className="px-4 py-2  text-white bg-[#FDB022] rounded hover:opacity-80"
               disabled={isSubmitting}
             >
-              {isSubmitting ? "Adding Pigs..." : "Add Pigs"}
+              {isSubmitting ? "Adding Food..." : "Add Food"}
             </button>
           </div>
         </form>

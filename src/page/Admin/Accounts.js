@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from "react";
-import axios from "../../http/index";
 import { Table } from "antd";
 import { Tag } from "antd";
 import Button from "../../components/core/Button";
-
+import {
+  getAccounts as getAccountsApi,
+  lockAccountAPI,
+} from "../../services/api/account";
 const styleNameColumn = "text-md 2xl:text-lg capitalize ";
 
 const onChange = (pagination, filters, sorter, extra) => {
@@ -12,21 +14,14 @@ const onChange = (pagination, filters, sorter, extra) => {
 
 export default function Accounts() {
   const [accounts, setAccounts] = useState([]);
-  console.log("🚀 ~ file: Accounts.js:64 ~ accounts:", accounts);
 
   const handleStatusChange = async (_id, lockAccount) => {
-    console.log("🚀 ~ file: Accounts.js:18 ~ props:", lockAccount);
-    const res = await axios.patch(
-      `http://localhost:4000/api/admin//lock-account/${_id}`,
-      {
-        lockAccount: !lockAccount,
-      }
-    );
+    await lockAccountAPI(_id, lockAccount);
     getAccounts();
   };
 
   const getAccounts = async () => {
-    const res = await axios.get("http://localhost:4000/api/admin/accounts");
+    const res = await getAccountsApi();
     setAccounts([...res.data]);
   };
 
@@ -99,7 +94,7 @@ export default function Accounts() {
         columns={columns}
         dataSource={accounts}
         onChange={onChange}
-        className="w-[70%]"
+        className="w-[90%]"
       />
     </div>
   );

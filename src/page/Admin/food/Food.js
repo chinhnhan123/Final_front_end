@@ -1,18 +1,21 @@
 import React, { useEffect, useState } from "react";
-import axios from "../../../http/index";
 import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
-import Button from "../../../components/core/Button";
-import { PlusOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router";
+
+import Button from "../../../components/core/Button";
 import Table from "../../../components/table/Table";
 import Modals from "../../../components/modal/CreateModal";
+
+import { PlusOutlined } from "@ant-design/icons";
+
+import { getFood as getFoodAPI, deleteFood } from "../../../services/api/food";
 
 const Food = () => {
   const navigate = useNavigate();
   const [data, setData] = useState([]);
   useEffect(() => {
     const getFood = async () => {
-      const res = await axios.get("http://localhost:4000/api/food");
+      const res = await getFoodAPI();
       setData([...res.data]);
     };
     getFood();
@@ -20,9 +23,9 @@ const Food = () => {
 
   const handleDeleteConfirm = async (id) => {
     try {
-      await axios.delete(`http://localhost:4000/api/food/${id}`);
+      await deleteFood(id);
       // Refresh data after successful deletion
-      const res = await axios.get("http://localhost:4000/api/food");
+      const res = await getFoodAPI();
       setData([...res.data]);
     } catch (error) {
       console.error("Error deleting food:", error);

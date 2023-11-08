@@ -1,12 +1,10 @@
+import * as yup from "yup";
 import React from "react";
-// import axios from "../../../http/index";
+import { Select } from "antd";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import "./index.css";
 
-import * as yup from "yup";
-import { useNavigate } from "react-router-dom";
-import { Select } from "antd";
 const { Option } = Select;
 
 const schema = yup.object().shape({

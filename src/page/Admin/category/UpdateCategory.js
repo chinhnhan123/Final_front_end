@@ -1,10 +1,13 @@
 import React, { useEffect } from "react";
-import axios from "../../../http/index";
+import { useNavigate, useParams } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
-import { useNavigate, useParams } from "react-router-dom";
 
+import {
+  getCategoryById,
+  updateCategory,
+} from "../../../services/api/category";
 const schema = yup.object().shape({
   nameCategory: yup.string().required("Category name is required"),
   kilogram: yup.number().required("Kilogram is required"),
@@ -28,9 +31,7 @@ const UpdateCategory = () => {
   useEffect(() => {
     const fetchCategory = async () => {
       try {
-        const response = await axios.get(
-          `http://localhost:4000/api/category/${id}`
-        );
+        const response = await getCategoryById(id);
         const categoryData = response.data;
         setValue("nameCategory", categoryData.nameCategory);
         setValue("kilogram", categoryData.kilogram);
@@ -46,10 +47,7 @@ const UpdateCategory = () => {
 
   const onSubmit = async (data) => {
     try {
-      const res = await axios.put(
-        `http://localhost:4000/api/category/${id}`,
-        data
-      );
+      const res = await updateCategory(id, data);
       if (res.status === 200) {
         navigate("/category", { replace: true });
       }

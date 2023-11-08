@@ -1,19 +1,19 @@
 import React, { useContext, useEffect, useState } from "react";
-import Button from "../../components/core/Button";
-import { PlusSquareOutlined } from "@ant-design/icons";
-import PigCard from "../../components/cards/PigCard";
 import { useNavigate } from "react-router";
-import axios from "../../http/index";
+
+import Button from "../../components/core/Button";
+import PigCard from "../../components/cards/PigCard";
 import { AuthContext } from "../../context/auth/AuthContext";
+import { getHerdByAccount, deleteHerd, getHerd } from "../../services/api/herd";
+import { PlusSquareOutlined } from "@ant-design/icons";
 
 export default function Pigs() {
   const navigate = useNavigate();
   const { user } = useContext(AuthContext);
   const [data, setData] = useState([]);
-  console.log("🚀 ~ file: Pigs.js:12 ~ data:", data);
   useEffect(() => {
     const getHerd = async () => {
-      const res = await axios.get(`http://localhost:4000/api/herd/${user.id}`);
+      const res = await getHerdByAccount(user.id);
       setData([...res.data]);
     };
     getHerd();
@@ -21,9 +21,9 @@ export default function Pigs() {
 
   const handleDeleteConfirm = async (id) => {
     try {
-      await axios.delete(`http://localhost:4000/api/herd/${id}`);
+      await deleteHerd(id);
       // Refresh data after successful deletion
-      const res = await axios.get("http://localhost:4000/api/herd");
+      const res = getHerd();
       setData([...res.data]);
     } catch (error) {
       console.error("Error deleting herd:", error);
