@@ -2,7 +2,6 @@ import { Fragment } from "react";
 import { Route, Routes } from "react-router-dom";
 import Register from "./page/Register";
 import Login from "./page/Login";
-import Payment from "./page/Payment";
 import MessagePage from "./page/MessagePage";
 import Main from "./layout/Main";
 import Dashboard from "./page/Admin/Dashboard";

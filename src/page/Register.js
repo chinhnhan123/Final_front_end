@@ -5,8 +5,8 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { useNavigate } from "react-router-dom";
 
-import farmer from "../assets/images/farmer.png";
-import trader from "../assets/images/trader.png";
+import Farmer from "../assets/images/farmer.png";
+import Trader from "../assets/images/trader.png";
 import { registerAPI } from "../services/api/auth";
 import { enqueueSnackbar } from "notistack";
 
@@ -18,7 +18,7 @@ const schema = yup.object({
 });
 
 const Register = () => {
-  const [bg, setBg] = useState(farmer);
+  const [bg, setBg] = useState(Farmer);
   const text = useRef();
   const navigate = useNavigate();
 
@@ -31,14 +31,14 @@ const Register = () => {
 
   const handleClick = (e) => {
     e.preventDefault();
-    if (e.target.textContent === "farmer") {
-      text.current.textContent = "farmer";
-      e.target.textContent = "trader";
-      setBg(farmer);
+    if (e.target.textContent === "Farmer") {
+      text.current.textContent = "Farmer";
+      e.target.textContent = "Trader";
+      setBg(Farmer);
     } else {
-      text.current.textContent = "trader";
-      e.target.textContent = "farmer";
-      setBg(trader);
+      text.current.textContent = "Trader";
+      e.target.textContent = "Farmer";
+      setBg(Trader);
     }
   };
 

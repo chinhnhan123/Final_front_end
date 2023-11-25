@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { Steps } from "antd";
+import { enqueueSnackbar } from "notistack";
 
 import Button from "../../../components/core/Button";
 import FormStage1 from "../../../components/form/FormStage1";
@@ -95,6 +96,43 @@ const CreateGuide = () => {
   };
 
   const onDone = async () => {
+    // check null
+    if (
+      stage1.food.length === 0 ||
+      stage1.medicine.length === 0 ||
+      stage1.notes === ""
+    ) {
+      enqueueSnackbar(
+        "Thông tin giai đoạn 1 chưa hoàn thiện! Vui lòng điền đầy đủ.",
+        { variant: "error", autoHideDuration: 3000 }
+      );
+      return;
+    }
+
+    if (
+      stage2.food.length === 0 ||
+      stage2.medicine.length === 0 ||
+      stage2.notes === ""
+    ) {
+      enqueueSnackbar(
+        "Thông tin giai đoạn 2 chưa hoàn thiện! Vui lòng điền đầy đủ.",
+        { variant: "error", autoHideDuration: 3000 }
+      );
+      return;
+    }
+
+    if (
+      stage3.food.length === 0 ||
+      stage3.medicine.length === 0 ||
+      stage3.notes === ""
+    ) {
+      enqueueSnackbar(
+        "Thông tin giai đoạn 3 chưa hoàn thiện! Vui lòng điền đầy đủ.",
+        { variant: "error", autoHideDuration: 3000 }
+      );
+      return;
+    }
+
     const payload = {
       stage1: {
         idFood: stage1.food,

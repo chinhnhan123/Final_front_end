@@ -14,6 +14,12 @@ const lockAccountAPI = (id, lockAccount) => {
   });
 };
 
+const updateVIPAccount = (id) => {
+  return axios.patch(`http://localhost:4000/api/admin/vip-account/${id}`, {
+    vipAccount: true,
+  });
+};
+
 const updateAvatar = (id, data) => {
   return axios.patch(`http://localhost:4000/api/admin/avatar/${id}`, data, {
     headers: {
@@ -22,4 +28,25 @@ const updateAvatar = (id, data) => {
   });
 };
 
-export { getAccounts, getAccountById, lockAccountAPI, updateAvatar };
+const getTotalAccountFarmers = () => {
+  return axios.get("http://localhost:4000/api/admin/total-account-farmer");
+};
+
+const getTotalAccountTraders = () => {
+  return axios.get("http://localhost:4000/api/admin/total-account-trader");
+};
+
+const getTotalAccountVIP = () => {
+  return axios.get("http://localhost:4000/api/admin/total-account-vip");
+};
+
+export {
+  getAccounts,
+  getAccountById,
+  lockAccountAPI,
+  updateAvatar,
+  updateVIPAccount,
+  getTotalAccountFarmers,
+  getTotalAccountTraders,
+  getTotalAccountVIP,
+};

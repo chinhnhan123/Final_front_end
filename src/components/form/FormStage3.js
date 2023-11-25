@@ -81,6 +81,7 @@ const Stage3 = ({ foodSelect, medicineSelect, stage3, setStage3 }) => {
         <textarea
           type="text"
           rows="7"
+          required
           defaultValue={stage3.notes}
           {...register("note")}
           onChange={handleChangeNotes}

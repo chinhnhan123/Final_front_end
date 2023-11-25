@@ -55,8 +55,8 @@ const Home = () => {
   useEffect(() => {
     const getConversations = async () => {
       try {
-        const res = await getConversation(user.id);
-        setConversations(res.data);
+        const resConversations = await getConversation(user.id);
+        setConversations(resConversations.data);
       } catch (err) {
         console.log(err);
       }
@@ -84,8 +84,8 @@ const Home = () => {
   useEffect(() => {
     const getMessages = async () => {
       try {
-        const res = await getChat(currentChat?._id);
-        setMessages(res.data);
+        const resMessages = await getChat(currentChat?._id);
+        setMessages(resMessages.data);
       } catch (err) {
         console.log(err);
       }
@@ -144,8 +144,8 @@ const Home = () => {
     });
 
     try {
-      const res = await createChat(message);
-      setMessages([...messages, res.data]);
+      const resCreatedChat = await createChat(message);
+      setMessages([...messages, resCreatedChat.data]);
       inputMessage.current.value = "";
     } catch (err) {
       console.log(err);
@@ -153,7 +153,7 @@ const Home = () => {
   };
   return (
     <div className="flex-1 w-full h-full max-h-screen bg-[#FEEFC7]">
-      <div className="container flex flex-col w-full h-full p-7 main-body">
+      <div className="flex flex-col w-full h-full p-7 main-body">
         <div className="flex flex-row flex-1 h-full main">
           <div className="hidden w-1/3 lg:block heading flex-2">
             <div className="flex flex-col mb-5">
@@ -252,8 +252,8 @@ const Home = () => {
                         <span className="inline-block align-text-bottom">
                           <svg
                             fill="none"
-                            strokeLineCap="round"
-                            strokeLineJoin="round"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
                             strokeWidth="2"
                             stroke="currentColor"
                             viewBox="0 0 24 24"

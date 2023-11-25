@@ -1,5 +1,7 @@
 import React, { useState } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { enqueueSnackbar } from "notistack";
+
 import {
   LeftCircleOutlined,
   MessageOutlined,
@@ -18,27 +20,35 @@ import { AuthContext } from "../context/auth/AuthContext";
 import { useContext } from "react";
 import logo from "../assets/images/logo.jpg";
 import rocket from "../assets/images/startup.png";
-import Payment from "../components/paymentStripe/Payment";
 import StripeCheckout from "react-stripe-checkout";
+import { updateVIPAccount } from "../services/api/account";
 
 const Sidebar = () => {
   const [open, setOpen] = useState(true);
   const [mobileMenu, setMobileMenu] = useState(false);
   const location = useLocation();
   const { user } = useContext(AuthContext);
+  const navigate = useNavigate();
+
   const stripeKey =
-    "sk_test_51Ny3rpFX2CDVz062Nqo3OfXOdc2Go5tMuAp7MrLAh3C8NN7v4qV1vI0ir9OG6Dsgfa7IrVxFx6frK06YSaSLZFGE00I51hHabP";
-  const handleToken = async (token, adresses) => {
-    console.log(
-      "🚀 ~ file: Payment.js:6 ~ handleToken ~ token:",
-      token,
-      adresses
-    );
+    "pk_test_51Ny3rpFX2CDVz062cwlcYGiTAzsduZ0PWXdNkNLWhOVtyh8rioqN0EwJXUJWJthIU9TyZtspW79gbWSUFm7M9cp500s9ZaEyBc";
+
+  const handleToken = async () => {
+    const res = await updateVIPAccount(user.id);
+    if (res.status === 200) {
+      enqueueSnackbar(
+        "Nâng cấp tài khoản VIP thành công. Vui lòng đăng nhập lại.",
+        { variant: "success" }
+      );
+      handleLogout();
+      navigate("/login", { replace: true });
+    }
   };
+
   const handleLogout = () => {
-    console.log("🚀 ~ file: SideBar.js:29 ~ handleLogout ~ handleLogout:");
     localStorage.clear();
   };
+
   let Menus = [];
   if (user?.role === "Farmer") {
     Menus = [
@@ -135,7 +145,16 @@ const Sidebar = () => {
         </ul>
 
         {open
-          ? user?.role == "Farmer" && (
+          ? user?.role === "Farmer" &&
+            (user.vip === true ? (
+              <div className="absolute bottom-0 left-0 right-0 px-2 py-5 m-3 flex justify-center items-center">
+                <img
+                  width="134"
+                  src="https://img.icons8.com/nolan/64/vip.png"
+                  alt="vip"
+                />
+              </div>
+            ) : (
               <div className="absolute bottom-0 left-0 right-0 px-2 py-5 m-3 flex bg-cyan-100 rounded-lg ">
                 <div className="w-[60%]">
                   <p className="mb-3 text-lg font-normal line leading-5">
@@ -147,6 +166,7 @@ const Sidebar = () => {
                       stripeKey={stripeKey}
                       description="Please fill in the details below"
                       image={logo}
+                      token={handleToken}
                       billingAddress
                       amount={15 * 100}
                       currency="USD"
@@ -160,12 +180,21 @@ const Sidebar = () => {
                   <img className="w-24" src={rocket} alt="rocket" />
                 </div>
               </div>
-            )
-          : user?.role == "Farmer" && (
+            ))
+          : user?.role === "Farmer" &&
+            (user.vip === true ? (
+              <div className="absolute bottom-0 left-0 right-0 px-2 py-5 m-3 flex justify-center items-center">
+                <img
+                  width="64"
+                  src="https://img.icons8.com/nolan/64/vip.png"
+                  alt="vip"
+                />
+              </div>
+            ) : (
               <div className="absolute bottom-0 left-0 right-0 px-2 py-5 mt-5 ml-3 ">
                 <img className="w-12" src={rocket} alt="rocket" />
               </div>
-            )}
+            ))}
       </div>
       {/* Mobile Menu */}
       <div className="pt-3">

@@ -1,19 +1,19 @@
 import React from "react";
 import { Pie } from "@ant-design/plots";
 
-const DemoPie = () => {
+const DemoPie = ({ data: dataUser }) => {
   const data = [
     {
       type: "Farmer",
-      value: 27,
+      value: dataUser?.farmer || 0,
     },
     {
       type: "Trader",
-      value: 25,
+      value: dataUser?.trader || 0,
     },
     {
       type: "VIP User",
-      value: 18,
+      value: dataUser?.vip || 0,
     },
   ];
   const config = {

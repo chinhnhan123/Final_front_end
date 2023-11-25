@@ -51,7 +51,7 @@ const DetailPig = () => {
                 <img
                   src={food.urlImage}
                   alt={food.nameFood}
-                  className="object-cover w-32 h-32 mt-2"
+                  className="object-cover w-32 h-32 mt-2 rounded-md"
                 />
                 <div>
                   <p className="text-xl font-bold capitalize">
@@ -76,7 +76,7 @@ const DetailPig = () => {
                 <img
                   src={medicine.urlImage}
                   alt={medicine.nameMedicine}
-                  className="object-cover w-32 h-32 mt-2"
+                  className="object-cover w-32 h-32 mt-2 rounded-md"
                 />
                 <div>
                   <p className="text-xl font-bold capitalize">
@@ -113,7 +113,7 @@ const DetailPig = () => {
                 <img
                   src={food.urlImage}
                   alt={food.nameFood}
-                  className="object-cover w-32 h-32 mt-2"
+                  className="object-cover w-32 h-32 mt-2 rounded-md"
                 />
                 <div>
                   <p className="text-xl font-bold capitalize">
@@ -138,7 +138,7 @@ const DetailPig = () => {
                 <img
                   src={medicine.urlImage}
                   alt={medicine.nameMedicine}
-                  className="object-cover w-32 h-32 mt-2"
+                  className="object-cover w-32 h-32 mt-2 rounded-md"
                 />
                 <div>
                   <p className="text-xl font-bold capitalize">
@@ -175,7 +175,7 @@ const DetailPig = () => {
                 <img
                   src={food.urlImage}
                   alt={food.nameFood}
-                  className="object-cover w-32 h-32 mt-2"
+                  className="object-cover w-32 h-32 mt-2 rounded-md"
                 />
                 <div>
                   <p className="text-xl font-bold capitalize">
@@ -200,7 +200,7 @@ const DetailPig = () => {
                 <img
                   src={medicine.urlImage}
                   alt={medicine.nameMedicine}
-                  className="object-cover w-32 h-32 mt-2"
+                  className="object-cover w-32 h-32 mt-2 rounded-md"
                 />
                 <div>
                   <p className="text-xl font-bold capitalize">
@@ -227,26 +227,28 @@ const DetailPig = () => {
 
   return (
     <div className="m-2 sm:m-5 h-[90%]">
-      <div className="flex">
+      <div className="flex ml-10">
         <div className="hidden sm:inline-block">
           <ArrowLeftOutlined
             onClick={() => navigate("/")}
-            className="mr-8 text-2xl"
+            className="mr-8 text-3xl text-slate-700 font-bold hover:opacity-50"
           />
         </div>
         <div className="flex">
           <img
             src={data?.urlImage}
             alt="img-pig"
-            className="rounded-md w-28 sm:w-40 aspect-[4/3]"
+            className="rounded-md w-32 sm:w-44 aspect-[4/3]"
           />
           <div className="ml-5">
-            <p className="text-2xl font-bold">{data?.name}</p>
-            <p>Quantity: {data?.quantity}</p>
+            <p className="text-4xl font-bold mt-5 capitalize">{data?.name}</p>
+            <p className="mt-2 text-xl font-light italic">
+              Quantity: {data?.quantity}
+            </p>
           </div>
         </div>
       </div>
-      <div className="w-[90%] h-[80%] bg-white rounded-lg mt-7 mx-9  overflow-y-auto">
+      <div className="w-[90%] h-[80%] bg-white rounded-lg my-3 mx-9  overflow-y-auto">
         <Tabs defaultActiveKey="1" centered type="card">
           <TabPane
             className="h-auto"
@@ -263,7 +265,9 @@ const DetailPig = () => {
                   <p className="text-xl font-bold text-center capitalize 2xl:text-3xl">
                     {guide[0]?.idStage?.nameStage}
                   </p>
-                  <p>{guide[0]?.idStage?.description}</p>
+                  <p className="text-base italic">
+                    {guide[0]?.idStage?.description}
+                  </p>
                 </div>
               </div>
               <Collapse items={items1} ghost />
@@ -283,7 +287,9 @@ const DetailPig = () => {
                   <p className="text-xl font-bold text-center capitalize 2xl:text-3xl">
                     {guide[1]?.idStage?.nameStage}
                   </p>
-                  <p>{guide[1]?.idStage?.description}</p>
+                  <p className="text-base italic">
+                    {guide[1]?.idStage?.description}
+                  </p>
                 </div>
               </div>
               <Collapse items={items2} ghost />
@@ -303,7 +309,9 @@ const DetailPig = () => {
                   <p className="text-xl font-bold text-center capitalize 2xl:text-3xl">
                     {guide[2]?.idStage?.nameStage}
                   </p>
-                  <p>{guide[2]?.idStage?.description}</p>
+                  <p className="text-base italic">
+                    {guide[2]?.idStage?.description}
+                  </p>
                 </div>
               </div>
               <Collapse items={items3} ghost />
